@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Core;
 using Microsoft.AspNetCore.Mvc;
@@ -11,26 +10,27 @@ using Newtonsoft.Json.Linq;
 
 namespace ImmerDiscordBot.TrelloListener
 {
-    public static class TrelloRequestTrigger
+    public class TrelloRequestTrigger
     {
+        private readonly DiscordMessageBuilder _discord;
+
+        public TrelloRequestTrigger(DiscordMessageBuilder discord)
+        {
+            _discord = discord;
+        }
+
         [FunctionName("TrelloRequestTrigger")]
-        public static async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", "head")]
+        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", "head")]
             HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             if (string.IsNullOrEmpty(requestBody)) return new OkResult();
-            using var discordWebHook = Discord();
-            var discordMessageBuilder = new DiscordMessageBuilder(discordWebHook);
-            await discordMessageBuilder.SendMessageToDiscord(JToken.Parse(requestBody));
+
+            await _discord.SendMessageToDiscord(JToken.Parse(requestBody));
 
             return new OkResult();
         }
-
-        private static DiscordWebHook Discord() => new DiscordWebHook(
-            System.Environment.GetEnvironmentVariable("Discord:WebhookId", EnvironmentVariableTarget.Process),
-            System.Environment.GetEnvironmentVariable("Discord:WebhookToken", EnvironmentVariableTarget.Process)
-        );
     }
 }
