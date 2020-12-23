@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Contracts;
 using ImmerDiscordBot.TrelloListener.DiscordObjects;
 using ImmerDiscordBot.TrelloListener.TrelloObjects;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace ImmerDiscordBot.TrelloListener.Core
@@ -11,14 +12,15 @@ namespace ImmerDiscordBot.TrelloListener.Core
     public class DiscordMessageBuilder
     {
         private readonly DiscordWebHook _discordWebHook;
+        private readonly TrelloUserService _trelloUserService;
+        private readonly ILogger _logger;
 
-        public DiscordMessageBuilder(DiscordWebHook discordWebHook)
+        public DiscordMessageBuilder(DiscordWebHook discordWebHook, TrelloUserService trelloUserService, ILogger<DiscordMessageBuilder> logger)
         {
             _discordWebHook = discordWebHook;
+            _trelloUserService = trelloUserService;
+            _logger = logger;
         }
-
-
-        private static Lazy<Dictionary<string, string>> UserStrings = new Lazy<Dictionary<string, string>>(GetUsers);
 
         public async Task SendMessageToDiscord(JToken data)
         {
@@ -71,7 +73,7 @@ namespace ImmerDiscordBot.TrelloListener.Core
             await _discordWebHook.ExecuteWebhook(content);
         }
 
-        private static EmbedFieldObject[] StandardFields(TriggerAction action)
+        private EmbedFieldObject[] StandardFields(TriggerAction action)
         {
             var list = new List<EmbedFieldObject>
             {
@@ -88,15 +90,16 @@ namespace ImmerDiscordBot.TrelloListener.Core
                     Value = $"[{action.Data.Card.Name}](https://trello.com/c/{action.Data.Card.ShortLink})"
                 }
             };
-            var dict = UserStrings.Value;
-            if (dict.ContainsKey(action.MemberCreator.UserName))
+            var discordUserId = _trelloUserService.GetDiscordUserId(action.MemberCreator.UserName);
+
+            if (!string.IsNullOrEmpty(discordUserId))
             {
                 list.Add(
                     new EmbedFieldObject
                     {
                         IsInline = false,
                         Name = "Discord User:",
-                        Value = dict[action.MemberCreator.UserName]
+                        Value = discordUserId
                     });
             }
 
@@ -109,23 +112,6 @@ namespace ImmerDiscordBot.TrelloListener.Core
             {
                 MentionTypes = new[] {MentionTypes.Users},
                 Users = new object[0]
-            };
-        }
-
-        private static Dictionary<string, string> GetUsers()
-        {
-            //TODO: go to https://trello.com/c/4sH956sm and get my comment with my @trelloUser = (?discordUserId<@\d+>) till then
-            return new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
-            {
-                {"mrsaspira", "<@671447566990180362>"},
-                {"sergeykolbunov", "<@423683303351255050>"},
-                {"zera110011", "<@275119482035240960>"},
-                {"jaketalley2", "<@352512074653368340>"},
-                {"kswestfall1", "<@330138066369118209>"},
-                {"nickbornt", "<@211298225699684353>"},
-                {"danielgordon69", "<@349350939766947853>"},
-                {"robertsnyder20", "<@409018285561085967>"},
-                {"matthew16633808", "<@715310990341963836>"},
             };
         }
 

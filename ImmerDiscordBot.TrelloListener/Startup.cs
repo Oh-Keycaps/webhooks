@@ -16,7 +16,8 @@ namespace ImmerDiscordBot.TrelloListener
 
             builder.Services
                 .AddTransient<DiscordWebHook>()
-                .AddTransient<DiscordMessageBuilder>();
+                .AddTransient<DiscordMessageBuilder>()
+                .AddSingleton<TrelloUserService>();
         }
     }
 }
