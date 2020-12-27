@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Contracts;
 using ImmerDiscordBot.TrelloListener.DiscordObjects;
@@ -36,7 +35,7 @@ namespace ImmerDiscordBot.TrelloListener.Core
                     await SendMessageToDiscord(new ItemChecked(), triggerEvent);
                     break;
                 case ActionTypes.UpdateCard:
-                    if ((data.SelectToken("action.display.translationKey").Value<string>().Equals("action_move_card_from_list_to_list")))
+                    if (data.SelectToken("action.display.translationKey").Value<string>().Equals("action_move_card_from_list_to_list"))
                         await SendMessageToDiscord(new CardMovedToNewList(), triggerEvent);
                     break;
             }
@@ -44,66 +43,74 @@ namespace ImmerDiscordBot.TrelloListener.Core
         }
         private async Task SendMessageToDiscord(IBuildDiscordMessageFromTrelloAction playground, TriggerEvent triggerEvent)
         {
-            var action = triggerEvent.Action;
-            var content = new ExecuteWebhook
-            {
-                Embeds = new List<EmbedObject>(),
-                AllowedMentions = StandardMentions(),
-            };
             var embedObject = new EmbedObject
             {
-                Title = $"Trello: {triggerEvent.Model.Name} update",
-                Fields = new List<EmbedFieldObject>(StandardFields(action)),
+                Fields = new List<EmbedFieldObject>(StandardFields(triggerEvent.Action)),
                 Provider = new EmbedProviderObject
                 {
-                    Url = triggerEvent.Model.Url,
                     Name = "Trello"
                 },
-                Thumbnail = GetMemberCreatorThumbnail(action.MemberCreator)
+                Thumbnail = GetMemberCreatorThumbnail(triggerEvent.Action.MemberCreator)
             };
+            AddProviderAndTitle(triggerEvent.Model, embedObject);
             if (triggerEvent.Action.Data.Card != null)
             {
                 embedObject.Url = $"https://trello.com/c/{triggerEvent.Action.Data.Card.ShortLink}";
             }
-
-            content.Embeds.Add(embedObject);
             var builder = playground.Build(triggerEvent);
             builder(embedObject);
 
-            await _discordWebHook.ExecuteWebhook(content);
+            await _discordWebHook.ExecuteWebhook(new ExecuteWebhook
+            {
+                Embeds = new List<EmbedObject> {embedObject},
+                AllowedMentions = StandardMentions(),
+            });
         }
 
-        private EmbedFieldObject[] StandardFields(TriggerAction action)
+        private void AddProviderAndTitle(TriggerModel model, EmbedObject embedObject)
         {
-            var list = new List<EmbedFieldObject>
+            if (model == null)
             {
-                new EmbedFieldObject
-                {
-                    IsInline = true,
-                    Name = "Member:",
-                    Value = $"{action.MemberCreator.FullName} ({action.MemberCreator.UserName})",
-                },
-                new EmbedFieldObject
-                {
-                    IsInline = true,
-                    Name = "Card:",
-                    Value = $"[{action.Data.Card.Name}](https://trello.com/c/{action.Data.Card.ShortLink})"
-                }
+                _logger.LogWarning("Trello Model object is not found. Could be test");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(model.Url))
+                _logger.LogWarning("Trello Model url is not found. Could be test");
+            else
+                embedObject.Provider.Url = model.Url;
+
+            if (string.IsNullOrEmpty(model.Name))
+                _logger.LogWarning("Trello Model name is not found. Could be test");
+            else
+                embedObject.Title = $"Trello: {model.Name} update";
+        }
+
+        private IEnumerable<EmbedFieldObject> StandardFields(TriggerAction action)
+        {
+            yield return new EmbedFieldObject
+            {
+                IsInline = true,
+                Name = "Card:",
+                Value = $"[{action.Data.Card.Name}](https://trello.com/c/{action.Data.Card.ShortLink})"
+            };
+            yield return new EmbedFieldObject
+            {
+                IsInline = true,
+                Name = "Member:",
+                Value = $"{action.MemberCreator.FullName} ({action.MemberCreator.UserName})",
             };
             var discordUserId = _trelloUserService.GetDiscordUserId(action.MemberCreator.UserName);
 
             if (!string.IsNullOrEmpty(discordUserId))
             {
-                list.Add(
-                    new EmbedFieldObject
-                    {
-                        IsInline = false,
-                        Name = "Discord User:",
-                        Value = discordUserId
-                    });
+                yield return new EmbedFieldObject
+                {
+                    IsInline = false,
+                    Name = "Discord User:",
+                    Value = discordUserId
+                };
             }
-
-            return list.ToArray();
         }
 
         private static Mentions StandardMentions()
