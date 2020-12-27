@@ -29,7 +29,7 @@ namespace ImmerDiscordBot.TrelloListener.Core
             switch (triggerEvent.Action.Type)
             {
                 case ActionTypes.AddAttachmentToCard:
-                    if (triggerEvent.Action.Data.Attachment.Name.EndsWith(".jpg", StringComparison.InvariantCultureIgnoreCase))
+                    if(triggerEvent.AttachmentHasExtensionType(".jpeg") || triggerEvent.AttachmentHasExtensionType(".jpg"))
                         await SendMessageToDiscord(new CardGotNewAttachment(), triggerEvent);
                     break;
                 case ActionTypes.UpdateCheckItemStateOnCard:
