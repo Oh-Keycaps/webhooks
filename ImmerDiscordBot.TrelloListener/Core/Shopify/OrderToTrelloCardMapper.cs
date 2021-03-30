@@ -7,16 +7,14 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
     public class OrderToTrelloCardMapper
     {
-        private const long UsbCableProductId = 3826285674607;
-        private const long TrrsCableProductId = 4372054507631;
 
         public TrelloCardToCreate MapToTrelloCard(Order order)
         {
-            var builtToOrderDactyl = order.LineItems.First(x => x.ProductId == 3874182594671);
+            var builtToOrderDactyl = order.LineItems.First(x => x.ProductId == ProductIdConstants.BuiltToOrderDactyl);
             var props = builtToOrderDactyl.Properties.ToArray();
             var accessories = new List<string>();
-            AddAccessoryIfExists(order, UsbCableProductId, accessories);
-            AddAccessoryIfExists(order, TrrsCableProductId, accessories);
+            AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
+            AddAccessoryIfExists(order, ProductIdConstants.TrrsCableProductId, accessories);
 
             return new TrelloCardToCreate
             {
