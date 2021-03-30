@@ -1,4 +1,6 @@
-﻿using ImmerDiscordBot.TrelloListener.Core;
+﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
+using ImmerDiscordBot.TrelloListener.Core;
+using ImmerDiscordBot.TrelloListener.Core.Shopify;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +22,11 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddTransient<DiscordWebHook>()
                 .AddTransient<DiscordMessageBuilder>()
                 .AddSingleton<TrelloClient>()
-                .AddSingleton<TrelloUserService>();
+                .AddSingleton<TrelloUserService>()
+                .AddTransient<IOrderReader, OrderJsonReader>()
+                .AddTransient<IOrderFilter, OrderCreatedFilter>()
+                .AddTransient<IOrderToTrelloCardMapper, OrderToTrelloCardMapper>()
+                ;
         }
     }
 }

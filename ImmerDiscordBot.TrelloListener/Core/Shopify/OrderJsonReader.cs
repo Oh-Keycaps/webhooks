@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Text;
+using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 using Microsoft.Azure.ServiceBus;
 using Newtonsoft.Json;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
-    public class OrderJsonReader
+    public class OrderJsonReader : IOrderReader
     {
         private readonly JsonSerializer _serializer;
 

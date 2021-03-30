@@ -2,6 +2,7 @@
 {
     public struct TrelloCardToCreate
     {
+        public string OrderName;
         public string CaseColor;
         public string CaseVariant;
         public string Switches;

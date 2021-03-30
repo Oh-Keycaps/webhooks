@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
 using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
-    public class OrderToTrelloCardMapper
+    public class OrderToTrelloCardMapper : IOrderToTrelloCardMapper
     {
-
         public TrelloCardToCreate MapToTrelloCard(Order order)
         {
             var builtToOrderDactyl = order.LineItems.First(x => x.ProductId == ProductIdConstants.BuiltToOrderDactyl);
@@ -18,6 +18,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 
             return new TrelloCardToCreate
             {
+                OrderName = order.Name,
                 Switches = GetPropertyByNameContains(props, "Switches"),
                 MCU = GetPropertyByNameEquals(props, "Micro Controller Type"),
                 CaseColor = GetPropertyByNameEquals(props, "Case Color"),
