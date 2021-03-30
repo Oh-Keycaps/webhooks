@@ -15,6 +15,11 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             var accessories = new List<string>();
             AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
             AddAccessoryIfExists(order, ProductIdConstants.TrrsCableProductId, accessories);
+            if (order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
+            {
+                var name = GetPropertyByNameContains(props, "Keycaps");
+                accessories.Add($"Keycaps - {name}");
+            }
 
             return new TrelloCardToCreate
             {
