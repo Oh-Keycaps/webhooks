@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Trello
 {
     public abstract class TrelloUriQueryBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Trello
 {
     public class TrelloCreateCardUriQueryBuilder : TrelloCardUriQueryBuilder
     {

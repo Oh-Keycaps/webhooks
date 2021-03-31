@@ -1,6 +1,8 @@
 ﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Core;
+using ImmerDiscordBot.TrelloListener.Core.Discord;
 using ImmerDiscordBot.TrelloListener.Core.Shopify;
+using ImmerDiscordBot.TrelloListener.Core.Trello;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

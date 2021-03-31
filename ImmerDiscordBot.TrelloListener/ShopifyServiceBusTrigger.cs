@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Core;
+using ImmerDiscordBot.TrelloListener.Core.Trello;
+using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.ServiceBus;
@@ -37,10 +39,10 @@ namespace ImmerDiscordBot.TrelloListener
                 var order = _orderReader.ReadFromMessage(m);
                 if (_orderCreatedFilter.IsOrderForDactylKeyboard(order))
                 {
-                    log.LogInformation("Creating trello card for order {0}", order.Name);
-                    var trelloCardInfo = _orderMapper.MapToTrelloCard(order);
-                    await _trelloClient.CreateCard(trelloCardInfo, token);
-                    log.LogInformation("Created trello card for order {0}", order.Name);
+                    await Task.WhenAll
+                    (
+                        CreateCardOnTrello(order, token, log)
+                    );
                 }
             }
             catch (Exception e)
@@ -51,6 +53,14 @@ namespace ImmerDiscordBot.TrelloListener
                 await messageCollector.AddAsync(erroredMessage, token);
             }
             log.LogInformation("-Processing message:{0}", m.MessageId);
+        }
+
+        private async Task CreateCardOnTrello(Order order, CancellationToken token, ILogger log)
+        {
+            log.LogInformation("+CreateCardOnTrello {0}", order.Name);
+            var trelloCardInfo = _orderMapper.MapToTrelloCard(order);
+            await _trelloClient.CreateCard(trelloCardInfo, token);
+            log.LogInformation("-CreateCardOnTrello {0}", order.Name);
         }
     }
 }

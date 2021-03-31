@@ -1,4 +1,4 @@
-﻿namespace ImmerDiscordBot.TrelloListener.Core
+﻿namespace ImmerDiscordBot.TrelloListener.Core.Discord
 {
     public class DiscordSettings
     {

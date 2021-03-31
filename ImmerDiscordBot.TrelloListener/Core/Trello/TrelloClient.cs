@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Trello
 {
     public class TrelloClient : IDisposable
     {

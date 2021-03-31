@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Contracts;
+using ImmerDiscordBot.TrelloListener.Core.Trello;
 using ImmerDiscordBot.TrelloListener.DiscordObjects;
 using ImmerDiscordBot.TrelloListener.TrelloObjects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Discord
 {
     public class DiscordMessageBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Trello
 {
     public class TrelloUserService
     {

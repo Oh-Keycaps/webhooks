@@ -6,7 +6,7 @@ using ImmerDiscordBot.TrelloListener.DiscordObjects;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace ImmerDiscordBot.TrelloListener.Core
+namespace ImmerDiscordBot.TrelloListener.Core.Discord
 {
     public class DiscordWebHook : IDisposable
     {
