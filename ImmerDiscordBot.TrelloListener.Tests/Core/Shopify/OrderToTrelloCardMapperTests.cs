@@ -1,18 +1,23 @@
-﻿using NUnit.Framework;
+﻿using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
+using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
     [TestFixture]
     public class OrderToTrelloCardMapperTests
     {
-        [Test]
-        public void MappingKnownOrder()
-        {
-            var message = FakeMessageBus.CreateMessage("data/order-3468.json");
-            var order = message.ToOrderObject();
-            var iut = new OrderToTrelloCardMapper();
+        private OrderToTrelloCardMapper _iut;
 
-            var actual = iut.MapToTrelloCard(order);
+        [SetUp]
+        protected void Setup()
+        {
+            _iut = new OrderToTrelloCardMapper();
+        }
+
+        [Test]
+        public void MappingKnownOrder3468()
+        {
+            var actual = GetOrderFromDataFile("data/order-3468.json");
 
             Assert.That(actual.OrderName, Is.EqualTo("#3468"));
             Assert.That(actual.Switches, Is.EqualTo("Cherry MX Brown"));
@@ -30,11 +35,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         [Test]
         public void MappingKnownOrder3499()
         {
-            var message = FakeMessageBus.CreateMessage("data/order-3499.json");
-            var order = message.ToOrderObject();
-            var iut = new OrderToTrelloCardMapper();
-
-            var actual = iut.MapToTrelloCard(order);
+            var actual = GetOrderFromDataFile("data/order-3499.json");
 
             Assert.That(actual.OrderName, Is.EqualTo("#3499"));
             Assert.That(actual.Switches, Is.EqualTo("Cherry MX Blue"));
@@ -49,13 +50,9 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         }
 
         [Test]
-        public void MappingKnownOrder3687250755695()
+        public void MappingKnownOrder3508()
         {
-            var message = FakeMessageBus.CreateMessage("data/order-3508.json");
-            var order = message.ToOrderObject();
-            var iut = new OrderToTrelloCardMapper();
-
-            var actual = iut.MapToTrelloCard(order);
+            var actual = GetOrderFromDataFile("data/order-3508.json");
 
             Assert.That(actual.OrderName, Is.EqualTo("#3508"));
             Assert.That(actual.Switches, Is.EqualTo("Cherry MX Blue"));
@@ -69,6 +66,54 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.Accessories[0], Is.EqualTo("USB-C cables - White - Long (Dec 1st pre-order)"));
             Assert.That(actual.Accessories[1], Is.EqualTo("TRRS Cables - White/Black - 1.5m"));
             Assert.That(actual.Accessories[2], Is.EqualTo("Keycaps - DSA Pink/Purple"));
+        }
+
+        [Test]
+        public void MappingPaintJobOrder2607()
+        {
+            var actual = GetOrderFromDataFile("data/order-2607.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#2607"));
+            Assert.That(actual.Switches, Is.EqualTo(string.Empty));
+            Assert.That(actual.MCU, Is.EqualTo("Elite C"));
+            Assert.That(actual.CaseColor, Is.Null);
+            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"));
+            Assert.That(actual.WristRestColor, Is.EqualTo("Black"));
+            Assert.That(actual.LEDs, Is.EqualTo(string.Empty));
+            Assert.That(actual.IsDomestic, Is.EqualTo(false));
+            Assert.That(actual.PaintCaseColor, Is.EqualTo("Black"));
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false));
+            Assert.That(actual.Accessories, Is.Empty);
+        }
+
+        [Test]
+        public void MappingBluetooth3307()
+        {
+            var actual = GetOrderFromDataFile("data/order-3307.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#3307"));
+            Assert.That(actual.Switches, Is.EqualTo("Lubed Healios"));
+            Assert.That(actual.MCU, Is.EqualTo("Elite C"));
+            Assert.That(actual.CaseColor, Is.EqualTo("White"));
+            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 6x6"));
+            Assert.That(actual.WristRestColor, Is.EqualTo("Black"));
+            Assert.That(actual.LEDs, Is.EqualTo("3x Strips of 4x LEDs per Side"));
+            Assert.That(actual.IsDomestic, Is.EqualTo(true));
+            Assert.That(actual.IsBluetooth, Is.EqualTo(true));
+            Assert.That(actual.Accessories[0], Is.EqualTo("USB-C cables - Red w/ Black Techflex - Long (Dec 1st pre-order)"));
+            Assert.That(actual.Accessories[1], Is.EqualTo("TRRS Cables - Green - 1.5m"));
+            Assert.That(actual.Accessories[2], Is.EqualTo("Keycaps - SA White/Black"));
+        }
+
+        private TrelloCardToCreate GetOrderFromDataFile(string fileRelativePath)
+        {
+            var message = FakeMessageBus.CreateMessage(fileRelativePath);
+            var order = message.ToOrderObject();
+            var filter = new OrderCreatedFilter();
+            var isBuild = filter.IsOrderForDactylKeyboard(order);
+            if(!isBuild) Assert.Inconclusive($"Data file '{fileRelativePath}' is not a dactyl build");
+
+            return _iut.MapToTrelloCard(order);
         }
     }
 }

@@ -9,6 +9,7 @@
         public string WristRestColor;
         public string MCU;
         public string LEDs;
+        public string PaintCaseColor;
         public bool IsDomestic;
         public bool IsBluetooth;
         public string[] Accessories;

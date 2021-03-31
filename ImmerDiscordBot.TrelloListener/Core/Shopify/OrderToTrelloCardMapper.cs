@@ -10,18 +10,12 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
     {
         public TrelloCardToCreate MapToTrelloCard(Order order)
         {
-            var builtToOrderDactyl = order.LineItems.First(x => x.ProductId == ProductIdConstants.BuiltToOrderDactyl);
+            var builtToOrderDactyl = order.LineItems
+                .Where(x => x.ProductId.HasValue)
+                .First(x => ProductIdConstants.BuiltToOrderDactyl.Contains(x.ProductId.Value));
             var props = builtToOrderDactyl.Properties.ToArray();
-            var accessories = new List<string>();
-            AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
-            AddAccessoryIfExists(order, ProductIdConstants.TrrsCableProductId, accessories);
-            if (order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
-            {
-                var name = GetPropertyByNameContains(props, "Keycaps");
-                accessories.Add($"Keycaps - {name}");
-            }
 
-            return new TrelloCardToCreate
+            var trelloCardToCreate = new TrelloCardToCreate
             {
                 OrderName = order.Name,
                 Switches = GetPropertyByNameContains(props, "Switches"),
@@ -31,9 +25,26 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 WristRestColor = GetPropertyByNameEquals(props, "Gel Wrist Rest Color"),
                 LEDs = GetPropertyByNameEquals(props, "LEDs (optional)"),
                 IsDomestic = order.ShippingAddress.CountryCode.Equals("US"),
-                IsBluetooth = !string.IsNullOrEmpty(GetPropertyByNameEquals(props, "Bluetooth Upgrade*")),
-                Accessories = accessories.ToArray()
+                Accessories = ExtractAccessories(order, props).ToArray(),
+                PaintCaseColor = order.LineItems.FirstOrDefault(x => x.ProductId == 4402346688623)?.VariantTitle
             };
+            trelloCardToCreate.IsBluetooth = order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId);
+            return trelloCardToCreate;
+        }
+
+        private static string[] ExtractAccessories(Order order, LineItemProperty[] props)
+        {
+            var accessories = new List<string>();
+            AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
+            AddAccessoryIfExists(order, ProductIdConstants.TrrsCableProductId, accessories);
+            //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
+            if (order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
+            {
+                var name = GetPropertyByNameContains(props, "Keycaps");
+                accessories.Add($"Keycaps - {name}");
+            }
+
+            return accessories.ToArray();
         }
 
         private static void AddAccessoryIfExists(Order order, long productId, ICollection<string> accessories)
