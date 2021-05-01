@@ -17,12 +17,11 @@ namespace ImmerDiscordBot.TrelloListener
         {
             builder.Services.AddOptions<DiscordSettings>()
                 .Configure<IConfiguration>((settings, configuration) => configuration.GetSection("Discord").Bind(settings));
-            builder.Services.AddOptions<TrelloClientSettings>()
-                .Configure<IConfiguration>((settings, configuration) => configuration.GetSection("Trello").Bind(settings));
             builder.Services.AddOptions<ShopifyClientSettings>()
                 .Configure<IConfiguration>((settings, configuration) => configuration.GetSection("Shopify").Bind(settings));
 
             builder.Services
+                .BindTrelloClientSettings()
                 .AddTransient<DiscordWebHook>()
                 .AddTransient<DiscordMessageBuilder>()
                 .AddSingleton<TrelloClient>()
