@@ -26,9 +26,9 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 LEDs = GetPropertyByNameEquals(props, "LEDs (optional)"),
                 IsDomestic = order.ShippingAddress.CountryCode.Equals("US"),
                 Accessories = ExtractAccessories(order, props).ToArray(),
-                PaintCaseColor = order.LineItems.FirstOrDefault(x => x.ProductId == 4402346688623)?.VariantTitle
+                PaintCaseColor = order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.PaintCaseColorProductId)?.VariantTitle,
+                IsBluetooth = order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId),
             };
-            trelloCardToCreate.IsBluetooth = order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId);
             return trelloCardToCreate;
         }
 
