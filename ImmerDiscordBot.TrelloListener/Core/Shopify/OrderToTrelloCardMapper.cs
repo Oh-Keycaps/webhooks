@@ -14,7 +14,12 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 .Where(x => x.ProductId.HasValue)
                 .First(x => ProductIdConstants.BuiltToOrderDactyl.Contains(x.ProductId.Value));
             var props = builtToOrderDactyl.Properties.ToArray();
-
+            var caseType = builtToOrderDactyl.ProductId.Value switch
+            {
+                ProductIdConstants.BuiltToOrderDactylFdm => CaseTypes.PETG_PLA,
+                ProductIdConstants.BuiltToOrderDactylSla => CaseTypes.SLA,
+                _ => CaseTypes.UNKNOWN
+            };
             var trelloCardToCreate = new TrelloCardToCreate
             {
                 OrderName = order.Name,
@@ -28,6 +33,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 Accessories = ExtractAccessories(order, props).ToArray(),
                 PaintCaseColor = order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.PaintCaseColorProductId)?.VariantTitle,
                 IsBluetooth = order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId),
+                CaseType = caseType,
             };
             return trelloCardToCreate;
         }

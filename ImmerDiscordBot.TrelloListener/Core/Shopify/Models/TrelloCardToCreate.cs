@@ -13,5 +13,13 @@
         public bool IsDomestic;
         public bool IsBluetooth;
         public string[] Accessories;
+        public CaseTypes CaseType;
+    }
+
+    public enum CaseTypes
+    {
+        UNKNOWN = -1,
+        SLA,
+        PETG_PLA,
     }
 }

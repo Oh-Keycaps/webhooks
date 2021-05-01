@@ -15,17 +15,10 @@ namespace ImmerDiscordBot.TrelloListener
 {
     public class ShopifyServiceBusTrigger
     {
-        private readonly IOrderReader _orderReader;
-        private readonly IOrderFilter _orderCreatedFilter;
-        private readonly IOrderToTrelloCardMapper _orderMapper;
-        private readonly TrelloClient _trelloClient;
-
-        public ShopifyServiceBusTrigger(IOrderReader orderReader, IOrderFilter orderCreatedFilter, IOrderToTrelloCardMapper orderMapper, TrelloClient trelloClient)
+        private readonly ShopifyServiceBusTriggerManager _manager;
+        public ShopifyServiceBusTrigger(ShopifyServiceBusTriggerManager manager)
         {
-            _orderReader = orderReader;
-            _orderCreatedFilter = orderCreatedFilter;
-            _orderMapper = orderMapper;
-            _trelloClient = trelloClient;
+            _manager = manager;
         }
 
         [FunctionName(nameof(ShopifyServiceBusTrigger))]
@@ -36,14 +29,7 @@ namespace ImmerDiscordBot.TrelloListener
             log.LogInformation("+Processing message:{0}", m.MessageId);
             try
             {
-                var order = _orderReader.ReadFromMessage(m);
-                if (_orderCreatedFilter.IsOrderForDactylKeyboard(order))
-                {
-                    await Task.WhenAll
-                    (
-                        CreateCardOnTrello(order, token, log)
-                    );
-                }
+                await _manager.HandleMessage(m, token);
             }
             catch (Exception e)
             {
@@ -53,14 +39,6 @@ namespace ImmerDiscordBot.TrelloListener
                 await messageCollector.AddAsync(erroredMessage, token);
             }
             log.LogInformation("-Processing message:{0}", m.MessageId);
-        }
-
-        private async Task CreateCardOnTrello(Order order, CancellationToken token, ILogger log)
-        {
-            log.LogInformation("+CreateCardOnTrello {0}", order.Name);
-            var trelloCardInfo = _orderMapper.MapToTrelloCard(order);
-            await _trelloClient.CreateCard(trelloCardInfo, token);
-            log.LogInformation("-CreateCardOnTrello {0}", order.Name);
         }
     }
 }

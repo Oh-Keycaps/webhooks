@@ -28,6 +28,7 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddTransient<IOrderFilter, OrderCreatedFilter>()
                 .AddTransient<IOrderToTrelloCardMapper, OrderToTrelloCardMapper>()
                 .AddSingleton<IShopifyClient, ShopifyClient>()
+                .AddTransient<ShopifyServiceBusTriggerManager>()
                 ;
         }
     }
