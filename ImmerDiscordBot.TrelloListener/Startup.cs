@@ -1,6 +1,7 @@
 ﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Core;
 using ImmerDiscordBot.TrelloListener.Core.Discord;
+using ImmerDiscordBot.TrelloListener.Core.GoogleSheets;
 using ImmerDiscordBot.TrelloListener.Core.Shopify;
 using ImmerDiscordBot.TrelloListener.Core.Trello;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -15,11 +16,11 @@ namespace ImmerDiscordBot.TrelloListener
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-
             builder.Services
                 .BindTrelloClientSettings()
                 .BindDiscordSettings()
                 .BindShopifyClientSettings()
+                .AddGoogleSheetsServices()
                 .AddTransient<DiscordWebHook>()
                 .AddTransient<DiscordMessageBuilder>()
                 .AddSingleton<TrelloClient>()

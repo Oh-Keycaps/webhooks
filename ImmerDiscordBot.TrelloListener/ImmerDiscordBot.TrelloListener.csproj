@@ -4,6 +4,7 @@
         <AzureFunctionsVersion>V3</AzureFunctionsVersion>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Google.Apis.Sheets.v4" Version="1.51.0.2272" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
         <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.23" />
         <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.2.1" />
