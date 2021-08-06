@@ -23,7 +23,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
             _settings = options.Value;
         }
 
-        public Task Append(TrelloCardToCreate data, CancellationToken token)
+        public Task Append(SheetRow data, CancellationToken token)
         {
             _logger.LogDebug("Sending order {0} to {1}!{2}", data.OrderName, _settings.DocumentId, _settings.SheetId);
             var service = _serviceProvider.Get();
@@ -40,17 +40,26 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
             return request.ExecuteAsync(token);
         }
 
-        private static object[] CreateRow(TrelloCardToCreate data)
+        private static object[] CreateRow(SheetRow data)
         {
             return new object[]
             {
                 DateTime.UtcNow.ToString("MM\\/dd\\/yyyy"), //A
-                data.OrderName.Trim('#'), //B
+                data.OrderName, //B
                 data.CaseVariant, //C
                 data.CaseColor, //D
                 data.MCU, //E
-                data.CaseType.ToString(),
+                data.CaseType
             };
         }
     }
+    public class SheetRow
+    {
+        public string OrderName { get; set; }
+        public string CaseVariant { get; set; }
+        public string CaseColor { get; set; }
+        public string MCU { get; set; }
+        public string CaseType { get; set; }
+    }
+
 }

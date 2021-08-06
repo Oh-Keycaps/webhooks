@@ -30,7 +30,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(order, Is.Not.Null);
             Assert.That(order.Name, Is.Not.Null);
             Assert.That(order.LineItems, Is.Not.Null & Is.Not.Empty);
-            Assert.That(order.LineItems.All(x => x.ProductId.HasValue), "not all ProductIds have a value.. this isn't good");
+            Assert.That(order.LineItems.All(x => x.ProductId > 0), "not all ProductIds have a value.. this isn't good");
             Assert.That(order.LineItems.All(x => x.VariantId.HasValue), "not all VariantIds have a value.. this isn't good");
         }
 

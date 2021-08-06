@@ -1,4 +1,4 @@
-﻿using ImmerDiscordBot.TrelloListener.ShopifyObjects;
+﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 
 namespace ImmerDiscordBot.TrelloListener.Contracts.Shopify
 {

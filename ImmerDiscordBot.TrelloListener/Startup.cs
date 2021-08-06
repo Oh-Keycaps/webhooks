@@ -30,6 +30,7 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddTransient<IOrderToTrelloCardMapper, OrderToTrelloCardMapper>()
                 .AddSingleton<IShopifyClient, ShopifyClient>()
                 .AddTransient<ShopifyServiceBusTriggerManager>()
+                .AddTransient<OrderToSheetRowMapper>()
                 ;
         }
     }

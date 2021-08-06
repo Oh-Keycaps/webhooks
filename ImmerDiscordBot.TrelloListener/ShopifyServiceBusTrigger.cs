@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Core;
-using ImmerDiscordBot.TrelloListener.Core.Trello;
-using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.ServiceBus;
@@ -16,6 +13,7 @@ namespace ImmerDiscordBot.TrelloListener
     public class ShopifyServiceBusTrigger
     {
         private readonly ShopifyServiceBusTriggerManager _manager;
+
         public ShopifyServiceBusTrigger(ShopifyServiceBusTriggerManager manager)
         {
             _manager = manager;
@@ -23,13 +21,30 @@ namespace ImmerDiscordBot.TrelloListener
 
         [FunctionName(nameof(ShopifyServiceBusTrigger))]
         public async Task Trigger([ServiceBusTrigger("startshopify")] Message m, ILogger log, CancellationToken token,
-            [ServiceBus("startshopify.error", EntityType = EntityType.Queue)]IAsyncCollector<Message> messageCollector
-            )
+            [ServiceBus("startshopify.error", EntityType = EntityType.Queue)]
+            IAsyncCollector<Message> messageCollector,
+            [ServiceBus("createtrellocard", EntityType = EntityType.Queue)]
+            IAsyncCollector<Message> createTrelloCardCollector,
+            [ServiceBus("createrowgooglesheets", EntityType = EntityType.Queue)]
+            IAsyncCollector<Message> createRowGoogleSheetsCollector
+        )
         {
             log.LogInformation("+Processing message:{0}", m.MessageId);
             try
             {
-                await _manager.HandleMessage(m, token);
+                var response = _manager.HandleMessage(m);
+                var message = m.Clone();
+                if (response.ShouldCreateCardOnTrello)
+                {
+                    await createTrelloCardCollector.AddAsync(message, token);
+                    await createTrelloCardCollector.FlushAsync(token);
+                }
+
+                if (response.ShouldAddRowToGoogleSheets)
+                {
+                    await createRowGoogleSheetsCollector.AddAsync(message, token);
+                    await createRowGoogleSheetsCollector.FlushAsync(token);
+                }
             }
             catch (Exception e)
             {
@@ -38,6 +53,7 @@ namespace ImmerDiscordBot.TrelloListener
                 erroredMessage.UserProperties.Add("Exception", JsonConvert.SerializeObject(e));
                 await messageCollector.AddAsync(erroredMessage, token);
             }
+
             log.LogInformation("-Processing message:{0}", m.MessageId);
         }
     }

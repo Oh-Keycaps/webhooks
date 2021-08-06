@@ -1,5 +1,5 @@
-﻿using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
-using ImmerDiscordBot.TrelloListener.ShopifyObjects;
+﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
+using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
 
 namespace ImmerDiscordBot.TrelloListener.Contracts.Shopify
 {

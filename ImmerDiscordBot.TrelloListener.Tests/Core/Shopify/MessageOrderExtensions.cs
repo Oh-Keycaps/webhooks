@@ -1,4 +1,4 @@
-﻿using ImmerDiscordBot.TrelloListener.ShopifyObjects;
+﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 using Microsoft.Azure.ServiceBus;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify

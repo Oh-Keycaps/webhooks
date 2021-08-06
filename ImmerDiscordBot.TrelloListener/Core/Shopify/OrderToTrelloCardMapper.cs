@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
+using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
-using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
@@ -10,27 +10,19 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
     {
         public TrelloCardToCreate MapToTrelloCard(Order order)
         {
-            var builtToOrderDactyl = order.LineItems
-                .Where(x => x.ProductId.HasValue)
-                .First(x => ProductIdConstants.BuiltToOrderDactyl.Contains(x.ProductId.Value));
-            var props = builtToOrderDactyl.Properties.ToArray();
-            var caseType = builtToOrderDactyl.ProductId.Value switch
-            {
-                ProductIdConstants.BuiltToOrderDactylFdm => CaseTypes.PETG_PLA,
-                ProductIdConstants.BuiltToOrderDactylSla => CaseTypes.SLA,
-                _ => CaseTypes.UNKNOWN
-            };
+            var builtToOrderDactyl = order.GetBuiltToOrderDactyl();
+            var caseType = builtToOrderDactyl.GetCaseType();
             var trelloCardToCreate = new TrelloCardToCreate
             {
                 OrderName = order.Name,
-                Switches = GetPropertyByNameContains(props, "Switches"),
-                MCU = GetPropertyByNameEquals(props, "Micro Controller Type"),
-                CaseColor = GetPropertyByNameEquals(props, "Case Color"),
-                CaseVariant = GetPropertyByNameEquals(props, "Dactyl/Manuform Layout"),
-                WristRestColor = GetPropertyByNameEquals(props, "Gel Wrist Rest Color"),
-                LEDs = GetPropertyByNameEquals(props, "LEDs (optional)"),
-                IsDomestic = order.ShippingAddress.CountryCode.Equals("US"),
-                Accessories = ExtractAccessories(order, props).ToArray(),
+                Switches = builtToOrderDactyl.GetPropertyByNameContains("Switches"),
+                MCU = builtToOrderDactyl.GetPropertyByNameEquals("Micro Controller Type"),
+                CaseColor = builtToOrderDactyl.GetPropertyByNameEquals("Case Color"),
+                CaseVariant = builtToOrderDactyl.GetPropertyByNameEquals("Dactyl/Manuform Layout"),
+                WristRestColor = builtToOrderDactyl.GetPropertyByNameEquals("Gel Wrist Rest Color"),
+                LEDs = builtToOrderDactyl.GetPropertyByNameEquals("LEDs (optional)"),
+                IsDomestic = order.ShippingAddressCountryCode.Equals("US"),
+                Accessories = ExtractAccessories(order, builtToOrderDactyl).ToArray(),
                 PaintCaseColor = order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.PaintCaseColorProductId)?.VariantTitle,
                 IsBluetooth = order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId),
                 CaseType = caseType,
@@ -38,7 +30,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             return trelloCardToCreate;
         }
 
-        private static string[] ExtractAccessories(Order order, LineItemProperty[] props)
+        private static string[] ExtractAccessories(Order order, LineItem builtToOrderDactyl)
         {
             var accessories = new List<string>();
             AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
@@ -46,7 +38,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
             if (order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
             {
-                var name = GetPropertyByNameContains(props, "Keycaps");
+                var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
                 accessories.Add($"Keycaps - {name}");
             }
 
@@ -57,16 +49,6 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         {
             var product = order.LineItems.FirstOrDefault(x => x.ProductId == productId);
             if (product != null) accessories.Add(product.Name);
-        }
-
-        private static string GetPropertyByNameEquals(LineItemProperty[] props, string propName)
-        {
-            return props.FirstOrDefault(x => x.Name.Equals(propName))?.Value.ToString();
-        }
-
-        private static string GetPropertyByNameContains(LineItemProperty[] props, string propName)
-        {
-            return props.FirstOrDefault(x => x.Name.ToString().Contains(propName))?.Value.ToString();
         }
     }
 }

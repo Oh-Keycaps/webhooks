@@ -4,6 +4,7 @@ using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.ShopifyObjects;
 using Microsoft.Azure.ServiceBus;
 using Newtonsoft.Json;
+using ContractOrder = ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models.Order;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
@@ -16,11 +17,21 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             _serializer = new JsonSerializer();
         }
 
-        public Order ReadFromMessage(Message message)
+        public ContractOrder ReadFromMessage(Message message)
         {
-            var reader = new StreamReader(new MemoryStream(message.Body), Encoding.UTF8);
+            return ReadFromStream<ContractOrder>(new MemoryStream(message.Body));
+        }
+
+        public Order ReadFromStream(Stream stream)
+        {
+            return ReadFromStream<Order>(stream);
+        }
+
+        private T ReadFromStream<T>(Stream stream) where T : class
+        {
+            var reader = new StreamReader(stream, Encoding.UTF8);
             using var jsonTextReader = new JsonTextReader(reader);
-            return _serializer.Deserialize<Order>(jsonTextReader);
+            return _serializer.Deserialize<T>(jsonTextReader);
         }
     }
 }
