@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http;
 using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 using ImmerDiscordBot.TrelloListener.Core.Shopify;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.ServiceBus;
 using Microsoft.Extensions.Logging;
 using ShopifyOrder = ImmerDiscordBot.TrelloListener.ShopifyObjects.Order;
@@ -60,22 +60,46 @@ namespace ImmerDiscordBot.TrelloListener
             HttpRequest req,
             [ServiceBus("startshopify", EntityType = EntityType.Queue)]
             IAsyncCollector<Order> messageCollector,
-            ILogger log)
+            [ServiceBus("startshopify.error", EntityType = EntityType.Queue)]
+            IAsyncCollector<ErrorContext> errorMessageCollector,
+            ILogger log, CancellationToken token)
         {
             var fullOrder = _reader.ReadFromStream(req.Body);
-            var order = Convert(fullOrder);
-            await messageCollector.AddAsync(order);
-            return new OkResult();
+            try
+            {
+                if (!string.IsNullOrEmpty(fullOrder.CancelReason))
+                {
+                    return new OkResult();
+                }
+
+                var order = Convert(fullOrder);
+                await messageCollector.AddAsync(order, token);
+
+                return new OkResult();
+            }
+            catch (Exception e)
+            {
+                var errorContext = new ErrorContext
+                {
+                    ErrorMessage = e.Message,
+                    Exception = e,
+                    Order = fullOrder,
+                };
+                await errorMessageCollector.AddAsync(errorContext, token);
+                await errorMessageCollector.FlushAsync(token);
+                throw;
+            }
         }
 
         private static Order Convert(ShopifyOrder order)
         {
-            return new Order
+            var convert = new Order
             {
                 Name = order.Name,
                 ShippingAddressCountryCode = order.ShippingAddress.CountryCode,
                 LineItems = Convert(order.LineItems),
             };
+            return convert;
         }
 
         private static LineItem[] Convert(IEnumerable<ShopifyLineItem> lineItems)
@@ -101,6 +125,13 @@ namespace ImmerDiscordBot.TrelloListener
                 Name = lineItem.Name?.ToString() ?? string.Empty,
                 Value = lineItem.Value,
             }).ToArray();
+        }
+
+        public class ErrorContext
+        {
+            public string ErrorMessage { get; set; }
+            public Exception Exception { get; set; }
+            public ImmerDiscordBot.TrelloListener.ShopifyObjects.Order Order { get; set; }
         }
     }
 }
