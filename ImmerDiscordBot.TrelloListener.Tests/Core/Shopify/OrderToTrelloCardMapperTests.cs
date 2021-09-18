@@ -15,6 +15,24 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         }
 
         [Test]
+        public void MappingKnownOrder3773()
+        {
+            var actual = GetOrderFromDataFile("data/order-3773.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#3773"), "OrderName does not match expectations");
+            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
+            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo("Black"), "CaseColor does not match expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
+            Assert.That(actual.WristRestColor, Is.EqualTo("Navy"), "WristRestColor does not match expectations");
+            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Accessories, Has.Length.EqualTo(1), "Accessories count does not match expectations");
+            Assert.That(actual.Accessories[0], Is.EqualTo("TRRS Cables - Blue - 1.5m"));
+        }
+
+        [Test]
         public void MappingKnownOrder3716()
         {
             var actual = GetOrderFromDataFile("data/order-3716.json");

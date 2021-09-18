@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Transactions;
 using Newtonsoft.Json;
 
 namespace ImmerDiscordBot.TrelloListener.ShopifyObjects
@@ -226,12 +225,6 @@ namespace ImmerDiscordBot.TrelloListener.ShopifyObjects
         public string ReferringSite { get; set; }
 
         /// <summary>
-        /// The list of <see cref="Refund"/> objects applied to the order
-        /// </summary>
-        [JsonProperty("refunds")]
-        public IEnumerable<Refund> Refunds { get; set; }
-
-        /// <summary>
         /// The mailing address to where the order will be shipped. This address is optional and will not be available on orders that do not require one.
         /// </summary>
         [JsonProperty("shipping_address")]
@@ -328,13 +321,6 @@ namespace ImmerDiscordBot.TrelloListener.ShopifyObjects
         /// </summary>
         [JsonProperty("user_id")]
         public long? UserId { get; set; }
-
-        /// <summary>
-        /// An array of <see cref="Transaction"/> objects that detail all of the transactions in
-        /// this order.
-        /// </summary>
-        [JsonProperty("transactions")]
-        public IEnumerable<Transaction> Transactions { get; set; }
 
         /// <summary>
         /// Additional metadata about the <see cref="Order"/>. Note: This is not naturally returned with a <see cref="Order"/> response, as
