@@ -43,7 +43,7 @@ namespace ImmerDiscordBot.TrelloListener
         private static async Task<Context> RunCode(string path)
         {
             var request = FakeMessageBus.CreateRequest(path);
-            var service = new ShopifyOrderCreateTrigger(new OrderJsonReader(), null);
+            var service = new ShopifyOrderCreateTrigger(new OrderJsonReader(), null, new OrderConverter());
 
             using var source = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             var messageCollector = new TestMessageCollector<Order>();

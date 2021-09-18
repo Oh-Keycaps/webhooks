@@ -15,6 +15,23 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         }
 
         [Test]
+        public void MappingKnownOrder3716()
+        {
+            var actual = GetOrderFromDataFile("data/order-3716.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#3716"), "OrderName does not match expectations");
+            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
+            Assert.That(actual.MCU, Is.Null, "MCU does not match expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo("Black w/ Transparent bottom"), "CaseColor does not match expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 4x6"), "CaseVariant does not match expectations");
+            Assert.That(actual.WristRestColor, Is.Null, "WristRestColor does not match expectations");
+            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Accessories, Is.Empty, "Accessories does not match expectations");
+        }
+
+        [Test]
         public void MappingKnownOrder3468()
         {
             var actual = GetOrderFromDataFile("data/order-3468.json");
@@ -107,7 +124,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 
         private TrelloCardToCreate GetOrderFromDataFile(string fileRelativePath)
         {
-            var message = FakeMessageBus.CreateMessage(fileRelativePath);
+            var message = FakeMessageBus.CreateRequest(fileRelativePath);
             var order = message.ToOrderObject();
             var filter = new OrderCreatedFilter();
             var isBuild = filter.IsOrderForDactylKeyboard(order);

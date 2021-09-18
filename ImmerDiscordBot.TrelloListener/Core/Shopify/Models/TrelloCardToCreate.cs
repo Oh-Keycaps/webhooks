@@ -21,5 +21,6 @@
         UNKNOWN = -1,
         SLA,
         PETG_PLA,
+        DIY,
     }
 }

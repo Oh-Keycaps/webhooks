@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.ServiceBus;
 using NUnit.Framework;
 
@@ -13,19 +14,19 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
     [TestFixture("data/order-3472.json")]
     public class OrderJsonReaderTests
     {
-        private Message _message;
+        private HttpRequest _message;
         private OrderJsonReader _iut;
 
         public OrderJsonReaderTests(string fileRelativePath)
         {
-            _message = FakeMessageBus.CreateMessage(fileRelativePath);
+            _message = FakeMessageBus.CreateRequest(fileRelativePath);
             _iut = new OrderJsonReader();
         }
 
         [Test]
         public void CanReadImportantProperties()
         {
-            var order = _iut.ReadFromMessage(_message);
+            var order = _iut.ReadFromStream(_message.Body);
 
             Assert.That(order, Is.Not.Null);
             Assert.That(order.Name, Is.Not.Null);

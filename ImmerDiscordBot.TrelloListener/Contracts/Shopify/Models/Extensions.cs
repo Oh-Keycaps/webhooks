@@ -17,6 +17,7 @@ namespace ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models
             {
                 ProductIdConstants.BuiltToOrderDactylFdm => CaseTypes.PETG_PLA,
                 ProductIdConstants.BuiltToOrderDactylSla => CaseTypes.SLA,
+                ProductIdConstants.BuiltToOrderDactylDiy => CaseTypes.DIY,
                 _ => CaseTypes.UNKNOWN
             };
             return caseType;

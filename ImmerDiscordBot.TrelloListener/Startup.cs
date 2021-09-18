@@ -26,6 +26,7 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddSingleton<TrelloClient>()
                 .AddSingleton<TrelloUserService>()
                 .AddTransient<IOrderReader, OrderJsonReader>()
+                .AddTransient<IOrderConverter, OrderConverter>()
                 .AddTransient<IOrderFilter, OrderCreatedFilter>()
                 .AddTransient<IOrderToTrelloCardMapper, OrderToTrelloCardMapper>()
                 .AddSingleton<IShopifyClient, ShopifyClient>()
