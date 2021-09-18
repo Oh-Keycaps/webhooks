@@ -8,6 +8,7 @@
         public const long BuiltToOrderDactylDiy = 4339260883055;
         public const long UsbCableProductId = 3826285674607;
         public const long TrrsCableProductId = 4372054507631;
+        public const long BottomPlateProductId = 4365491339375;
         public const long KeycapsProductId = 4396504973423;
         public const long BluetoothUpgradeProductId = 4517565071471;
         public const long PaintCaseColorProductId = 4402346688623;

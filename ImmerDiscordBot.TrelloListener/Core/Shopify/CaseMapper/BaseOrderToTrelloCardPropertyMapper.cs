@@ -29,27 +29,33 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
             _order = order;
             _caseTypes = caseType;
             _builtToOrderDactyl = order.GetBuiltToOrderDactyl();
-            Accessories = ExtractAccessories(order, _builtToOrderDactyl);
+            Accessories = ExtractAccessories(_builtToOrderDactyl);
         }
 
-        private static string[] ExtractAccessories(Order order, LineItem builtToOrderDactyl)
+        private string[] ExtractAccessories(LineItem builtToOrderDactyl)
         {
             var accessories = new List<string>();
-            AddAccessoryIfExists(order, ProductIdConstants.UsbCableProductId, accessories);
-            AddAccessoryIfExists(order, ProductIdConstants.TrrsCableProductId, accessories);
+            AddAccessoryIfExists(ProductIdConstants.UsbCableProductId, accessories);
+            AddAccessoryIfExists(ProductIdConstants.TrrsCableProductId, accessories);
             //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
-            if (order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
+            if (_order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
             {
                 var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
                 accessories.Add($"Keycaps - {name}");
+            }
+            AddAccessoryIfExists(ProductIdConstants.BottomPlateProductId, accessories);
+            var optionalWristRest = _builtToOrderDactyl.GetPropertyByNameEquals("Optional Wrist Rest? ");
+            if (optionalWristRest != null)
+            {
+                accessories.Add(optionalWristRest);
             }
 
             return accessories.ToArray();
         }
 
-        private static void AddAccessoryIfExists(Order order, long productId, ICollection<string> accessories)
+        private void AddAccessoryIfExists(long productId, ICollection<string> accessories)
         {
-            var product = order.LineItems.FirstOrDefault(x => x.ProductId == productId);
+            var product = _order.LineItems.FirstOrDefault(x => x.ProductId == productId);
             if (product != null) accessories.Add(product.Name);
         }
     }
