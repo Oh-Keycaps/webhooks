@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
@@ -35,12 +36,18 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
         private string[] ExtractAccessories(LineItem builtToOrderDactyl)
         {
             var accessories = new List<string>();
-            AddAccessoryIfExists(ProductIdConstants.UsbCableProductId, accessories);
+            AddAccessoryIfExists(ProductIdConstants.UsbCable1, accessories);
+            AddAccessoryIfExists(ProductIdConstants.UsbCable2, accessories, item => $"USB-C cables - {item.VariantTitle}");
             AddAccessoryIfExists(ProductIdConstants.TrrsCableProductId, accessories);
             //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
-            if (_order.LineItems.Any(x => x.ProductId == ProductIdConstants.KeycapsProductId))
+            var keycaps = _order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.KeycapsProductId);
+            if (keycaps != null)
             {
                 var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = keycaps.VariantTitle;
+                }
                 accessories.Add($"Keycaps - {name}");
             }
             AddAccessoryIfExists(ProductIdConstants.BottomPlateProductId, accessories);
@@ -53,10 +60,13 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
             return accessories.ToArray();
         }
 
-        private void AddAccessoryIfExists(long productId, ICollection<string> accessories)
+        private void AddAccessoryIfExists(long productId, ICollection<string> accessories) =>
+            AddAccessoryIfExists(productId, accessories, product => product.Name);
+
+        private void AddAccessoryIfExists(long productId, ICollection<string> accessories, Func<LineItem, string> propertyGetter)
         {
             var product = _order.LineItems.FirstOrDefault(x => x.ProductId == productId);
-            if (product != null) accessories.Add(product.Name);
+            if (product != null) accessories.Add(propertyGetter(product));
         }
     }
 }

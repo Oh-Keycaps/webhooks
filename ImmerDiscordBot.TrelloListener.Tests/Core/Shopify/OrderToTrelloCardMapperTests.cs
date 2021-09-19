@@ -15,6 +15,51 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         }
 
         [Test]
+        public void MappingKnownOrder3854()
+        {
+            var actual = GetOrderFromDataFile("data/order-3854.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#3854"), "OrderName does not match expectations");
+            Assert.That(actual.Switches, Is.EqualTo("Lubed Tealios"), "Switches does not match expectations");
+            Assert.That(actual.MCU, Is.EqualTo("Elite C"), "MCU does not match expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo("Silk Blue"), "CaseColor does not match expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo("Dactyl"), "CaseVariant does not match expectations");
+            Assert.That(actual.WristRestColor, Is.EqualTo("Azure Blue"), "WristRestColor does not match expectations");
+            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Accessories, Is.EqualTo(new []
+            {
+                "USB-C cables - Arubian Sea",
+                "TRRS Cables - Blue - 1.5m",
+                "Keycaps - Dactyl - SA Blue/Blue",
+            }));
+        }
+
+        [Test]
+        public void MappingKnownOrder3827()
+        {
+            var actual = GetOrderFromDataFile("data/order-3827.json");
+
+            Assert.That(actual.OrderName, Is.EqualTo("#3827"), "OrderName does not match expectations");
+            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
+            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo("Copper"), "CaseColor does not match expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
+            Assert.That(actual.WristRestColor, Is.EqualTo("Azure Blue"), "WristRestColor does not match expectations");
+            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Accessories, Has.Length.EqualTo(3), "Accessories count does not match expectations");
+            Assert.That(actual.Accessories, Is.EqualTo(new []
+            {
+                "TRRS Cables - White/Black - 1.5m",
+                "Bottom Plate - 2x Bottom Plates",
+                "Wrist Rest Attachment",
+            }));
+        }
+
+        [Test]
         public void MappingKnownOrder3822()
         {
             var actual = GetOrderFromDataFile("data/order-3822.json");

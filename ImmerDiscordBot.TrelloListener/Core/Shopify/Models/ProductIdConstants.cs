@@ -6,7 +6,8 @@
         public const long BuiltToOrderDactylFdm = 3874182594671;
         public const long BuiltToOrderDactylSla = 4400460464239;
         public const long BuiltToOrderDactylDiy = 4339260883055;
-        public const long UsbCableProductId = 3826285674607;
+        public const long UsbCable1 = 3826285674607;
+        public const long UsbCable2 = 6703452455023;
         public const long TrrsCableProductId = 4372054507631;
         public const long BottomPlateProductId = 4365491339375;
         public const long KeycapsProductId = 4396504973423;
