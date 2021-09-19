@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -31,12 +33,19 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             const string dactylsToPrintList = "5db1f059f4e70129456ec11f";
             const string orderCardTemplateId = "5db2e495e40a6877cd888aac";
             const string bluetoothLabelId = "5f286a5fe0ec6f2206e6adbf";
+            const string hotswapLabelId = "5db1f0598bdee58e0d989d53";
+            const string diyOrderLabelId = "5db1f0598bdee58e0d989d5b";
             var sb = new StringBuilder()
                 .AppendLine($"{card.CaseColor} {card.CaseVariant}")
-                .AppendLine()
-                .AppendLine($"- [Switches] {card.Switches}")
+                .AppendLine();
+            if(string.IsNullOrEmpty(card.LEDs))
+                sb.AppendLine("- [Switches] None");
+            else
+                sb.AppendLine($"- [Switches] {card.Switches}");
+
+            sb
                 .AppendLine($"- [Wrist rest color] {card.WristRestColor}")
-                .AppendLine($"- [ProMicro/Elite C] {card.MCU}");
+                .AppendLine($"- [MCU] {card.MCU}");
             if(string.IsNullOrEmpty(card.LEDs))
                 sb.AppendLine("- [LEDs?] None");
             else
@@ -55,8 +64,18 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
                 SetPositionBottom = true,
                 Description = sb.ToString(),
             };
-            if(card.IsBluetooth)
-                uri.Labels = bluetoothLabelId;
+            var labels = new List<string>();
+            if (card.IsBluetooth)
+                labels.Add(bluetoothLabelId);
+            if (card.CaseType == CaseTypes.DIY)
+                labels.Add(diyOrderLabelId);
+            if (card.CaseType == CaseTypes.SLA)
+                labels.Add(hotswapLabelId);
+
+            if (labels.Any())
+            {
+                uri.Labels = string.Join(",", labels);
+            }
 
             var response = await _client.PostAsync(uri.ToUriString(), null, token);
             await using var stream = await response.Content.ReadAsStreamAsync();
