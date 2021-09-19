@@ -39,17 +39,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
             AddAccessoryIfExists(ProductIdConstants.UsbCable1, accessories);
             AddAccessoryIfExists(ProductIdConstants.UsbCable2, accessories, item => $"USB-C cables - {item.VariantTitle}");
             AddAccessoryIfExists(ProductIdConstants.TrrsCableProductId, accessories);
-            //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
-            var keycaps = _order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.KeycapsProductId);
-            if (keycaps != null)
-            {
-                var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
-                if (string.IsNullOrEmpty(name))
-                {
-                    name = keycaps.VariantTitle;
-                }
-                accessories.Add($"Keycaps - {name}");
-            }
+            AddSaKeycaps(builtToOrderDactyl, accessories);
+            AddDSaKeycaps(builtToOrderDactyl, accessories);
             AddAccessoryIfExists(ProductIdConstants.BottomPlateProductId, accessories);
             var optionalWristRest = _builtToOrderDactyl.GetPropertyByNameEquals("Optional Wrist Rest? ");
             if (optionalWristRest != null)
@@ -58,6 +49,31 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
             }
 
             return accessories.ToArray();
+        }
+
+        private void AddSaKeycaps(LineItem builtToOrderDactyl, List<string> accessories)
+        {
+            //getting keycaps name from properties because it is cleaner. If i get it from ProductId the name is really long.
+            var keycaps = _order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.SAKeycapsProductId);
+            if (keycaps != null)
+            {
+                var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = keycaps.VariantTitle;
+                }
+
+                accessories.Add($"Keycaps - {name}");
+            }
+        }
+
+        private void AddDSaKeycaps(LineItem builtToOrderDactyl, List<string> accessories)
+        {
+            var keycaps = _order.LineItems.Where(x => x.ProductId == ProductIdConstants.DSAKeycapsProductId);
+            foreach(var keycap in keycaps)
+            {
+                accessories.Add($"Keycaps - {keycap.Name}");
+            }
         }
 
         private void AddAccessoryIfExists(long productId, ICollection<string> accessories) =>
