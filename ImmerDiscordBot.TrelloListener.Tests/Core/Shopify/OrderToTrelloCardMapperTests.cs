@@ -19,6 +19,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         {
             var actual = GetOrderFromDataFile("data/order-3855.json");
 
+            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.DIY));
             Assert.That(actual.OrderName, Is.EqualTo("#3855"), "OrderName does not match expectations");
             Assert.That(actual.Switches, Is.EqualTo(null), "Switches does not match expectations");
             Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
@@ -39,10 +40,33 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         }
 
         [Test]
+        public void MappingKnownOrder3993()
+        {
+            var actual = GetOrderFromDataFile("data/order-3993.json");
+
+            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.DIY));
+            Assert.That(actual.OrderName, Is.EqualTo("#3993"), "OrderName does not match expectations");
+            Assert.That(actual.Switches, Is.EqualTo(null), "Switches does not match expectations");
+            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo("Wood"), "CaseColor does not match expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo("Dactyl"), "CaseVariant does not match expectations");
+            Assert.That(actual.WristRestColor, Is.EqualTo("White"), "WristRestColor does not match expectations");
+            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Accessories, Is.EqualTo(new []
+            {
+                "TRRS Cables - White/Black - 1.5m",
+                "Wrist Rest Attachment",
+            }));
+        }
+
+        [Test]
         public void MappingKnownOrder3854()
         {
             var actual = GetOrderFromDataFile("data/order-3854.json");
 
+            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.PETG_PLA));
             Assert.That(actual.OrderName, Is.EqualTo("#3854"), "OrderName does not match expectations");
             Assert.That(actual.Switches, Is.EqualTo("Lubed Tealios"), "Switches does not match expectations");
             Assert.That(actual.MCU, Is.EqualTo("Elite C"), "MCU does not match expectations");
