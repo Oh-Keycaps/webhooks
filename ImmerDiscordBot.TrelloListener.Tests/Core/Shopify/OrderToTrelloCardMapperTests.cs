@@ -14,29 +14,22 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             _iut = new OrderToTrelloCardMapper();
         }
 
-        [Test]
-        public void MappingKnownOrder3855()
+        [TestCaseSource(typeof(OrderToTrelloCardMapperDataSource))]
+        public void Tests(string fileRelativePath, TrelloCardToCreate expected)
         {
-            var actual = GetOrderFromDataFile("data/order-3855.json");
-
-            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.DIY));
-            Assert.That(actual.OrderName, Is.EqualTo("#3855"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.EqualTo(null), "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("White"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo("Purple Gel"), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "TRRS Cables - White/Black - 1.5m",
-                "Keycaps - DSA Pink/Purple Kits - Pink Scoops",
-                "Keycaps - DSA Pink/Purple Kits - 5x6 Manuform",
-                "Bottom Plate - 2x Bottom Plates",
-                "Wrist Rest Attachment",
-            }));
+            var actual = GetOrderFromDataFile(fileRelativePath);
+            Assert.That(actual.CaseType, Is.EqualTo(expected.CaseType), $"{nameof(TrelloCardToCreate.CaseType)} did not meet expectations");
+            Assert.That(actual.OrderName, Is.EqualTo(expected.OrderName), $"{nameof(TrelloCardToCreate.OrderName)} did not meet expectations");
+            Assert.That(actual.Switches, Is.EqualTo(expected.Switches), $"{nameof(TrelloCardToCreate.Switches)} did not meet expectations");
+            Assert.That(actual.MCU, Is.EqualTo(expected.MCU), $"{nameof(TrelloCardToCreate.MCU)} did not meet expectations");
+            Assert.That(actual.CaseColor, Is.EqualTo(expected.CaseColor), $"{nameof(TrelloCardToCreate.CaseColor)} did not meet expectations");
+            Assert.That(actual.CaseVariant, Is.EqualTo(expected.CaseVariant), $"{nameof(TrelloCardToCreate.CaseVariant)} did not meet expectations");
+            Assert.That(actual.WristRestColor, Is.EqualTo(expected.WristRestColor), $"{nameof(TrelloCardToCreate.WristRestColor)} did not meet expectations");
+            Assert.That(actual.LEDs, Is.EqualTo(expected.LEDs), $"{nameof(TrelloCardToCreate.LEDs)} did not meet expectations");
+            Assert.That(actual.IsDomestic, Is.EqualTo(expected.IsDomestic), $"{nameof(TrelloCardToCreate.IsDomestic)} did not meet expectations");
+            Assert.That(actual.IsBluetooth, Is.EqualTo(expected.IsBluetooth), $"{nameof(TrelloCardToCreate.IsBluetooth)} did not meet expectations");
+            Assert.That(actual.Notes, Is.EqualTo(expected.Notes), $"{nameof(TrelloCardToCreate.Notes)} did not meet expectations");
+            Assert.That(actual.Accessories, Is.EqualTo(expected.Accessories), $"{nameof(TrelloCardToCreate.Accessories)} did not meet expectations");
         }
 
         [Test]
@@ -54,6 +47,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "TRRS Cables - White/Black - 1.5m",
@@ -76,6 +70,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "USB-C cables - Arubian Sea",
@@ -98,7 +93,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Accessories, Has.Length.EqualTo(3), "Accessories count does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "TRRS Cables - White/Black - 1.5m",
@@ -121,7 +116,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Accessories, Has.Length.EqualTo(3), "Accessories count does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "TRRS Cables - Yellow - 1.5m",
@@ -144,7 +139,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Accessories, Has.Length.EqualTo(3), "Accessories count does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "TRRS Cables - Blue - 1.5m",
@@ -167,7 +162,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
             Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
             Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Accessories, Has.Length.EqualTo(1), "Accessories does not match expectations");
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "Wrist Rest Attachment",
@@ -188,6 +183,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.EqualTo(""));
             Assert.That(actual.IsDomestic, Is.EqualTo(true));
             Assert.That(actual.IsBluetooth, Is.EqualTo(false));
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "USB-C cables - White - Long (Dec 1st pre-order)",
@@ -209,6 +205,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.EqualTo("3x Strips of 4x LEDs per Side"));
             Assert.That(actual.IsDomestic, Is.EqualTo(true));
             Assert.That(actual.IsBluetooth, Is.EqualTo(false));
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "TRRS Cables - White/Black - 1.5m",
@@ -229,6 +226,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.EqualTo("3x Strips of 4x LEDs per Side"));
             Assert.That(actual.IsDomestic, Is.EqualTo(false));
             Assert.That(actual.IsBluetooth, Is.EqualTo(false));
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "USB-C cables - White - Long (Dec 1st pre-order)",
@@ -252,6 +250,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.IsDomestic, Is.EqualTo(false));
             Assert.That(actual.PaintCaseColor, Is.EqualTo("Black"));
             Assert.That(actual.IsBluetooth, Is.EqualTo(false));
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.Empty);
         }
 
@@ -269,6 +268,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             Assert.That(actual.LEDs, Is.EqualTo("3x Strips of 4x LEDs per Side"));
             Assert.That(actual.IsDomestic, Is.EqualTo(true));
             Assert.That(actual.IsBluetooth, Is.EqualTo(true));
+            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
             Assert.That(actual.Accessories, Is.EqualTo(new []
             {
                 "USB-C cables - Red w/ Black Techflex - Long (Dec 1st pre-order)",

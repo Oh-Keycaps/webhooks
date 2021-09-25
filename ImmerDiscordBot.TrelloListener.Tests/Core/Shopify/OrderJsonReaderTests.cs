@@ -1,7 +1,5 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.ServiceBus;
 using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify

@@ -14,6 +14,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 Name = order.Name,
                 ShippingAddressCountryCode = order.ShippingAddress.CountryCode,
                 LineItems = Convert(order.LineItems),
+                Notes = order.Note,
             };
             return convert;
         }

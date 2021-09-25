@@ -1,4 +1,5 @@
 ﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
+using ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper;
 
 namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
 {
@@ -8,15 +9,19 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
         {
             var builtToOrderDactyl = order.GetBuiltToOrderDactyl();
             var caseType = builtToOrderDactyl.GetCaseType();
-            var trelloCardToCreate = new SheetRow
+            var propertyMapper = OrderToTrelloCardPropertyMapperFactory.Create(order, caseType);
+
+            var sheetRow = new SheetRow
             {
-                OrderName = order.Name.TrimStart('#'),
-                MCU = builtToOrderDactyl.GetPropertyByNameEquals("Micro Controller Type"),
-                CaseColor = builtToOrderDactyl.GetPropertyByNameEquals("Case Color"),
-                CaseVariant = builtToOrderDactyl.GetPropertyByNameEquals("Dactyl/Manuform Layout"),
+                OrderName = propertyMapper.OrderName.TrimStart('#'),
+                MCU = propertyMapper.MCU,
+                CaseColor = propertyMapper.CaseColor,
+                CaseVariant = propertyMapper.CaseVariant,
                 CaseType = caseType.ToString(),
+                Notes = propertyMapper.Notes,
+                WristRestsIncluded = propertyMapper.AccessoryListBuilder.WristRest
             };
-            return trelloCardToCreate;
+            return sheetRow;
         }
     }
 }

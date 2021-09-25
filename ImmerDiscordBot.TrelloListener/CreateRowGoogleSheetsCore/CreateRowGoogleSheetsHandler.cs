@@ -21,10 +21,10 @@ namespace ImmerDiscordBot.TrelloListener.CreateRowGoogleSheetsCore
         [Disable("DisableCreateRowGoogleSheetsFunction"),FunctionName("CreateRowGoogleSheets")]
         public async Task HandleMessage([ServiceBusTrigger("createrowgooglesheets")] Order order, ILogger log, CancellationToken token)
         {
-            var trelloCardInfo = _orderMapper.MapToSheetRow(order);
-            log.LogDebug("+CreateRowInGoogleSpreadsheets {0}", trelloCardInfo.OrderName);
-            await _sheetsClient.Append(trelloCardInfo, token);
-            log.LogDebug("-CreateRowInGoogleSpreadsheets {0}", trelloCardInfo.OrderName);
+            var sheetRow = _orderMapper.MapToSheetRow(order);
+            log.LogDebug("+CreateRowInGoogleSpreadsheets {0}", sheetRow.OrderName);
+            await _sheetsClient.Append(sheetRow, token);
+            log.LogDebug("-CreateRowInGoogleSpreadsheets {0}", sheetRow.OrderName);
         }
     }
 }

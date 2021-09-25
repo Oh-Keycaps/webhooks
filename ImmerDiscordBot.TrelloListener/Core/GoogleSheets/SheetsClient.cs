@@ -49,17 +49,10 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 data.CaseVariant, //C
                 data.CaseColor, //D
                 data.MCU, //E
-                data.CaseType
+                data.CaseType,
+                data.WristRestsIncluded,
+                data.Notes
             };
         }
     }
-    public class SheetRow
-    {
-        public string OrderName { get; set; }
-        public string CaseVariant { get; set; }
-        public string CaseColor { get; set; }
-        public string MCU { get; set; }
-        public string CaseType { get; set; }
-    }
-
 }

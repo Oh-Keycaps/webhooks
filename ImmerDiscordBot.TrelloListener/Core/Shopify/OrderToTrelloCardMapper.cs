@@ -11,12 +11,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         {
             var builtToOrderDactyl = order.GetBuiltToOrderDactyl();
             var caseType = builtToOrderDactyl.GetCaseType();
-            IOrderToTrelloCardPropertyMapper propertyMapper = caseType switch
-            {
-                CaseTypes.DIY => new DiyOrderToTrelloCardPropertyMapper(),
-                _ => new BaseOrderToTrelloCardPropertyMapper(),
-            };
-            propertyMapper.Bind(order, caseType);
+            var propertyMapper = OrderToTrelloCardPropertyMapperFactory.Create(order, caseType);
             var trelloCardToCreate = new TrelloCardToCreate
             {
                 OrderName = propertyMapper.OrderName,
