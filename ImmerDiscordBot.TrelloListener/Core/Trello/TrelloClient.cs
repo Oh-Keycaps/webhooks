@@ -38,7 +38,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             var sb = new StringBuilder()
                 .AppendLine($"{card.CaseColor} {card.CaseVariant}")
                 .AppendLine();
-            if(string.IsNullOrEmpty(card.LEDs))
+            if(string.IsNullOrEmpty(card.Switches))
                 sb.AppendLine("- [Switches] None");
             else
                 sb.AppendLine($"- [Switches] {card.Switches}");
