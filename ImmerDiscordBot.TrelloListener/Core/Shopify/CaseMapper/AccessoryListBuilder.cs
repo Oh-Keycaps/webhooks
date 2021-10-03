@@ -53,6 +53,20 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
                 }
 
                 accessories.Add($"Keycaps - {name}");
+                return;
+            }
+
+            keycaps = order.LineItems.FirstOrDefault(x => x.ProductId == ProductIdConstants.SA4x6DactylManuformKeycaps);
+            if (keycaps != null)
+            {
+                var name = builtToOrderDactyl.GetPropertyByNameContains("Keycaps");
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = keycaps.VariantTitle;
+                }
+
+                accessories.Add($"Keycaps - SA {name}");
+                return;
             }
         }
 

@@ -27,6 +27,25 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                     "Wrist Rest Attachment",
                 }
             });
+
+            yield return new TrelloCardToCreateTestCaseData(new TrelloCardToCreate
+            {
+                CaseType = CaseTypes.PETG_PLA,
+                OrderName = "#4080",
+                Switches = "Lubed Tealios",
+                MCU = "Elite C",
+                CaseColor = "Silk Blue",
+                CaseVariant = "Manuform 4x6",
+                WristRestColor = "Azure Blue",
+                LEDs = string.Empty,
+                IsDomestic = true,
+                IsBluetooth = true,
+                Accessories = new []
+                {
+                    "TRRS Cables - Blue - 1.5m",
+                    "Keycaps - SA Pink/Blue",
+                }
+            });
         }
 
         IEnumerator IEnumerable.GetEnumerator()
