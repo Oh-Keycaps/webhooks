@@ -18,6 +18,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = "Manuform 5x6",
                 WristRestsIncluded = null,
                 Notes = "Using my own switches",
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/2298988298351",
             });
 
             yield return new SheetRowTestCaseData(new SheetRow
@@ -29,6 +30,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = "Manuform 6x6",
                 WristRestsIncluded = null,
                 Notes = null,
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/2726571016303",
             });
 
             yield return new SheetRowTestCaseData(new SheetRow
@@ -40,6 +42,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = "Manuform 4x6",
                 WristRestsIncluded = "Wrist Rest Attachment",
                 Notes = null,
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/3868970975343",
             });
 
             yield return new SheetRowTestCaseData(new SheetRow
@@ -51,6 +54,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = "Manuform 5x6",
                 WristRestsIncluded = "No Wrist Rest",
                 Notes = string.Empty,
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/3913295331439",
             });
 
             yield return new SheetRowTestCaseData(new SheetRow
@@ -62,6 +66,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = "Manuform 5x6",
                 WristRestsIncluded = "Wrist Rest Attachment",
                 Notes = null,
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/3927426170991"
             });
         }
 

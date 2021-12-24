@@ -1,6 +1,5 @@
 ﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.ServiceBus;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
 {
@@ -12,11 +11,6 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
             var converter = new OrderConverter();
             var fullOrder = reader.ReadFromStream(request.Body);
             return converter.Convert(fullOrder);
-        }
-        public static Order ToOrderObject(this Message m)
-        {
-            var reader = new OrderJsonReader();
-            return reader.ReadFromMessage(m);
         }
     }
 }

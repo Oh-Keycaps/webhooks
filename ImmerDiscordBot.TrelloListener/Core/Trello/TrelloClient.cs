@@ -56,6 +56,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             sb.AppendLine("- [Accessories (keycaps, cords, etc)]");
             foreach (var acc in card.Accessories)
                 sb.AppendLine($"  * {acc}");
+
+            sb.AppendLine().AppendLine($"[Shopify Order Link]({card.ShopifyOrderUrl})");
             var uri = new TrelloCreateCardUriQueryBuilder(_settings, dactylsToPrintList)
             {
                 Name = "Order " + card.OrderName,

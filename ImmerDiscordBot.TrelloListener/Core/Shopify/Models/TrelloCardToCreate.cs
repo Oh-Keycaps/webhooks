@@ -15,6 +15,7 @@
         public string[] Accessories { get; set; }
         public CaseTypes CaseType { get; set; }
         public string Notes { get; set; }
+        public string ShopifyOrderUrl { get; set; }
     }
 
     public enum CaseTypes

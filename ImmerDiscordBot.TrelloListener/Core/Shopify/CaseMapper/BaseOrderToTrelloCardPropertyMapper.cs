@@ -19,6 +19,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
         public virtual bool IsBluetooth => _order.LineItems.Any(x => x.ProductId == ProductIdConstants.BluetoothUpgradeProductId);
         public virtual CaseTypes CaseType => _caseTypes;
         public virtual string Notes => _order.Notes;
+        public virtual string ShopifyOrderUrl => $"https://mechcaps.myshopify.com/admin/orders/{_order.Id}";
         public AccessoryListBuilder AccessoryListBuilder { get; private set; }
 
         protected Order _order;

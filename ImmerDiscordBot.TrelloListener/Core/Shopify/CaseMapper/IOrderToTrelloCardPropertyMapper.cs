@@ -19,6 +19,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
         CaseTypes CaseType { get; }
         string Notes { get; }
         AccessoryListBuilder AccessoryListBuilder { get; }
+        string ShopifyOrderUrl { get; }
 
         void Bind(Order order, CaseTypes caseType);
     }

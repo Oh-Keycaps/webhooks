@@ -1,4 +1,5 @@
-﻿using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
+﻿using FluentAssertions;
+using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
 using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
@@ -18,134 +19,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         public void Tests(string fileRelativePath, TrelloCardToCreate expected)
         {
             var actual = GetOrderFromDataFile(fileRelativePath);
-            Assert.That(actual.CaseType, Is.EqualTo(expected.CaseType), $"{nameof(TrelloCardToCreate.CaseType)} did not meet expectations");
-            Assert.That(actual.OrderName, Is.EqualTo(expected.OrderName), $"{nameof(TrelloCardToCreate.OrderName)} did not meet expectations");
-            Assert.That(actual.Switches, Is.EqualTo(expected.Switches), $"{nameof(TrelloCardToCreate.Switches)} did not meet expectations");
-            Assert.That(actual.MCU, Is.EqualTo(expected.MCU), $"{nameof(TrelloCardToCreate.MCU)} did not meet expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo(expected.CaseColor), $"{nameof(TrelloCardToCreate.CaseColor)} did not meet expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo(expected.CaseVariant), $"{nameof(TrelloCardToCreate.CaseVariant)} did not meet expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo(expected.WristRestColor), $"{nameof(TrelloCardToCreate.WristRestColor)} did not meet expectations");
-            Assert.That(actual.LEDs, Is.EqualTo(expected.LEDs), $"{nameof(TrelloCardToCreate.LEDs)} did not meet expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(expected.IsDomestic), $"{nameof(TrelloCardToCreate.IsDomestic)} did not meet expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(expected.IsBluetooth), $"{nameof(TrelloCardToCreate.IsBluetooth)} did not meet expectations");
-            Assert.That(actual.Notes, Is.EqualTo(expected.Notes), $"{nameof(TrelloCardToCreate.Notes)} did not meet expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(expected.Accessories), $"{nameof(TrelloCardToCreate.Accessories)} did not meet expectations");
-        }
 
-        [Test]
-        public void MappingKnownOrder3993()
-        {
-            var actual = GetOrderFromDataFile("data/order-3993.json");
-
-            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.DIY));
-            Assert.That(actual.OrderName, Is.EqualTo("#3993"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.EqualTo(null), "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("Wood"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Dactyl"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo("White"), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "TRRS Cables - White/Black - 1.5m",
-                "Wrist Rest Attachment",
-            }));
-        }
-
-        [Test]
-        public void MappingKnownOrder3854()
-        {
-            var actual = GetOrderFromDataFile("data/order-3854.json");
-
-            Assert.That(actual.CaseType, Is.EqualTo(CaseTypes.PETG_PLA));
-            Assert.That(actual.OrderName, Is.EqualTo("#3854"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.EqualTo("Lubed Tealios"), "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Elite C"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("Silk Blue"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Dactyl"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo("Azure Blue"), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "USB-C cables - Arubian Sea",
-                "TRRS Cables - Blue - 1.5m",
-                "Keycaps - Dactyl - SA Blue/Blue",
-            }));
-        }
-
-        [Test]
-        public void MappingKnownOrder3827()
-        {
-            var actual = GetOrderFromDataFile("data/order-3827.json");
-
-            Assert.That(actual.OrderName, Is.EqualTo("#3827"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("Copper"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo("Azure Blue"), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(false), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "TRRS Cables - White/Black - 1.5m",
-                "Bottom Plate - 2x Bottom Plates",
-                "Wrist Rest Attachment",
-            }));
-        }
-
-        [Test]
-        public void MappingKnownOrder3822()
-        {
-            var actual = GetOrderFromDataFile("data/order-3822.json");
-
-            Assert.That(actual.OrderName, Is.EqualTo("#3822"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("Gray"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo(null), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "TRRS Cables - Yellow - 1.5m",
-                "Bottom Plate - 2x Bottom Plates",
-                "No Wrist Rest",
-            }));
-        }
-
-        [Test]
-        public void MappingKnownOrder3773()
-        {
-            var actual = GetOrderFromDataFile("data/order-3773.json");
-
-            Assert.That(actual.OrderName, Is.EqualTo("#3773"), "OrderName does not match expectations");
-            Assert.That(actual.Switches, Is.Null, "Switches does not match expectations");
-            Assert.That(actual.MCU, Is.EqualTo("Two Elite Cs"), "MCU does not match expectations");
-            Assert.That(actual.CaseColor, Is.EqualTo("Black"), "CaseColor does not match expectations");
-            Assert.That(actual.CaseVariant, Is.EqualTo("Manuform 5x6"), "CaseVariant does not match expectations");
-            Assert.That(actual.WristRestColor, Is.EqualTo("Navy"), "WristRestColor does not match expectations");
-            Assert.That(actual.LEDs, Is.Null, "LEDs does not match expectations");
-            Assert.That(actual.IsDomestic, Is.EqualTo(true), "IsDomestic does not match expectations");
-            Assert.That(actual.IsBluetooth, Is.EqualTo(false), "IsBluetooth does not match expectations");
-            Assert.That(actual.Notes, Is.EqualTo(null), "Notes on order failed expectations");
-            Assert.That(actual.Accessories, Is.EqualTo(new []
-            {
-                "TRRS Cables - Blue - 1.5m",
-                "Bottom Plate - 2x Bottom Plates",
-                "Wrist Rest Attachment",
-            }));
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Test]

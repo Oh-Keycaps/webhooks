@@ -26,6 +26,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 PaintCaseColor = propertyMapper.PaintCaseColor,
                 IsBluetooth = propertyMapper.IsBluetooth,
                 CaseType = propertyMapper.CaseType,
+                ShopifyOrderUrl = propertyMapper.ShopifyOrderUrl,
             };
             return trelloCardToCreate;
         }

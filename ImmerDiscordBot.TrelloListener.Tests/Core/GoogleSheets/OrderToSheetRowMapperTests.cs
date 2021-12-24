@@ -1,4 +1,5 @@
-﻿using ImmerDiscordBot.TrelloListener.Core.Shopify;
+﻿using FluentAssertions;
+using ImmerDiscordBot.TrelloListener.Core.Shopify;
 using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
@@ -18,7 +19,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
         {
             var actual = GetOrderFromDataFile(fileRelativePath);
 
-            Assert.That(actual, ShouldBe.EquivalentTo(expected));
+            actual.Should().BeEquivalentTo(expected);
         }
 
         private SheetRow GetOrderFromDataFile(string fileRelativePath)

@@ -9,5 +9,6 @@
         public string CaseType { get; set; }
         public string WristRestsIncluded { get; set; }
         public string Notes { get; set; }
+        public string ShopifyOrderUrl { get; set; }
     }
 }

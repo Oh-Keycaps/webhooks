@@ -19,7 +19,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 CaseVariant = propertyMapper.CaseVariant,
                 CaseType = caseType.ToString(),
                 Notes = propertyMapper.Notes,
-                WristRestsIncluded = propertyMapper.AccessoryListBuilder.WristRest
+                WristRestsIncluded = propertyMapper.AccessoryListBuilder.WristRest,
+                ShopifyOrderUrl = propertyMapper.ShopifyOrderUrl,
             };
             return sheetRow;
         }

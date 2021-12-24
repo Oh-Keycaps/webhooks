@@ -51,7 +51,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 data.MCU, //E
                 data.CaseType,
                 data.WristRestsIncluded,
-                data.Notes
+                data.Notes,
+                $"=HYPERLINK(\"{data.ShopifyOrderUrl}\", \"Shopify Order Link\")",
             };
         }
     }
