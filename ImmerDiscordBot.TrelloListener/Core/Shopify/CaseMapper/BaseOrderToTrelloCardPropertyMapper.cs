@@ -26,7 +26,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
         protected LineItem _builtToOrderDactyl;
         private CaseTypes _caseTypes;
 
-        public void Bind(Order order, CaseTypes caseType)
+        public virtual void Bind(Order order, CaseTypes caseType)
         {
             _order = order;
             _caseTypes = caseType;

@@ -157,6 +157,30 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
                 },
                 ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/3927413620847"
             });
+
+            yield return new TrelloCardToCreateTestCaseData(new TrelloCardToCreate
+            {
+                CaseType = CaseTypes.PETG_PLA,
+                OrderName = "#4236",
+                Switches = "Kailh Box Jade",
+                MCU = "Elite C",
+                CaseColor = "White",
+                CaseVariant = "Dactyl",
+                WristRestColor = "Black",
+                LEDs = null,
+                IsDomestic = false,
+                IsBluetooth = false,
+                Notes = null,
+                Accessories = new[]
+                {
+                    "USB-C Blue/Black coiled cable",
+                    "TRRS Cables - Blue/Black",
+                    "SA Blue/Black/White blank keycaps",
+                    "Red Escape Key",
+                    "Black Scooped home keys",
+                },
+                ShopifyOrderUrl = "https://mechcaps.myshopify.com/admin/orders/4319636422767"
+            });
         }
 
         IEnumerator IEnumerable.GetEnumerator()

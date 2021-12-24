@@ -24,5 +24,6 @@
         SLA,
         PETG_PLA,
         DIY,
+        Primeagen,
     }
 }

@@ -10,6 +10,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
             IOrderToTrelloCardPropertyMapper propertyMapper = caseType switch
             {
                 CaseTypes.DIY => new DiyOrderToTrelloCardPropertyMapper(),
+                CaseTypes.Primeagen => new PrimeagenDactylPropertyMapper(),
                 _ => new BaseOrderToTrelloCardPropertyMapper(),
             };
             propertyMapper.Bind(order, caseType);

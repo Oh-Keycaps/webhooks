@@ -8,11 +8,11 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify.CaseMapper
 {
     public class AccessoryListBuilder
     {
-        public string UsbCable { get; private set; }
-        public string TrrsCable { get; private set; }
-        public string[] KeyCaps { get; private set; }
+        public string UsbCable { get; internal set; }
+        public string TrrsCable { get; internal set; }
+        public string[] KeyCaps { get; internal set; }
         public string BottomPlate  { get; private set; }
-        public string WristRest  { get; private set; }
+        public string WristRest  { get; internal set; }
 
         public void Bind(Order order, LineItem builtToOrderDactyl)
         {

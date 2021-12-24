@@ -2,10 +2,11 @@
 {
     public class ProductIdConstants
     {
-        public static readonly long[] BuiltToOrderDactyl = { BuiltToOrderDactylFdm, BuiltToOrderDactylSla, BuiltToOrderDactylDiy };
+        public static readonly long[] BuiltToOrderDactyl = { BuiltToOrderDactylFdm, BuiltToOrderDactylSla, BuiltToOrderDactylDiy, ThePrimeagenDactyl };
         public const long BuiltToOrderDactylFdm = 3874182594671;
         public const long BuiltToOrderDactylSla = 4400460464239;
         public const long BuiltToOrderDactylDiy = 4339260883055;
+        public const long ThePrimeagenDactyl = 6887317635183;
         public const long UsbCable1 = 3826285674607;
         public const long UsbCable2 = 6703452455023;
         public const long TrrsCableProductId = 4372054507631;
