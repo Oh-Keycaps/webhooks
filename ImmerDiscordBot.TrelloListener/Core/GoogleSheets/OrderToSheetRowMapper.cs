@@ -17,7 +17,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 MCU = propertyMapper.MCU,
                 CaseColor = propertyMapper.CaseColor,
                 CaseVariant = propertyMapper.CaseVariant,
-                CaseType = caseType.ToString(),
+                CaseType = propertyMapper.CaseType.ToString(),
                 Notes = propertyMapper.Notes,
                 WristRestsIncluded = propertyMapper.AccessoryListBuilder.WristRest,
                 ShopifyOrderUrl = propertyMapper.ShopifyOrderUrl,

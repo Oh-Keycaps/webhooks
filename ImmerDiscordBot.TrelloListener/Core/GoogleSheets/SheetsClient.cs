@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -34,7 +33,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 Values = new List<IList<object>>{CreateRow(data)},
             };
             var request = service.Spreadsheets.Values.Append(body, _settings.DocumentId, range);
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             request.IncludeValuesInResponse = true;
 
             return request.ExecuteAsync(token);
@@ -52,6 +51,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
                 data.CaseType,
                 data.WristRestsIncluded,
                 data.Notes,
+
                 $"=HYPERLINK(\"{data.ShopifyOrderUrl}\", \"Shopify Order Link\")",
             };
         }
