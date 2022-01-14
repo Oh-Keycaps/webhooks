@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
+﻿using ImmerDiscordBot.TrelloListener.Contracts.Shopify;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 
