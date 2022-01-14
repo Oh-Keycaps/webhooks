@@ -86,7 +86,8 @@ namespace ImmerDiscordBot.TrelloListener
                 };
                 await errorMessageCollector.AddAsync(errorContext, token);
                 await errorMessageCollector.FlushAsync(token);
-                throw;
+                //swallow exception because these are in error queue and can be retried
+                return new OkResult();
             }
         }
 
