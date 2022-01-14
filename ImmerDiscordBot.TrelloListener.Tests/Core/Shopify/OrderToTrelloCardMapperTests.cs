@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
@@ -155,7 +156,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         private TrelloCardToCreate GetOrderFromDataFile(string fileRelativePath)
         {
             var message = FakeMessageBus.CreateRequest(fileRelativePath);
-            var order = message.ToOrderObject();
+            var order = message.ToOrderObject(NullLogger.Instance);
             var filter = new OrderCreatedFilter();
             var isBuild = filter.IsOrderForDactylKeyboard(order);
             if(!isBuild) Assert.Inconclusive($"Data file '{fileRelativePath}' is not a dactyl build");

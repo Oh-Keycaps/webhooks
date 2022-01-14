@@ -29,19 +29,20 @@ namespace ImmerDiscordBot.TrelloListener
         }
 
         [FunctionName("CallShopifyForOrder")]
-        public async Task<IActionResult> CallShopifyForOrder(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "CallShopify/orders/{orderId:long}")]
-            HttpRequest req, long orderId,
+        public async Task<IActionResult> CallShopifyForOrder([HttpTrigger(AuthorizationLevel.Function, "post", Route = "CallShopify/orders/{orderId:long}")] HttpRequest req, long orderId,
             [ServiceBus("startshopify", EntityType = EntityType.Queue)]
             IAsyncCollector<Order> messageCollector,
-            ILogger log)
+            ILogger log, ILogger logger)
         {
             try
             {
                 var fullOrder = await _shopifyClient.GetOrder(orderId);
-                var order = _converter.Convert(fullOrder);
-                await messageCollector.AddAsync(order);
-                return new OkResult();
+                using (log.UseScope(fullOrder))
+                {
+                    var order = _converter.Convert(fullOrder, logger);
+                    await messageCollector.AddAsync(order);
+                    return new OkResult();
+                }
             }
             catch (Exception e)
             {
@@ -64,31 +65,45 @@ namespace ImmerDiscordBot.TrelloListener
             ILogger log, CancellationToken token)
         {
             var fullOrder = _reader.ReadFromStream(req.Body);
-            try
+
+            using (log.UseScope(fullOrder))
             {
-                if (!string.IsNullOrEmpty(fullOrder.CancelReason))
+                try
                 {
+                    if (!string.IsNullOrEmpty(fullOrder.CancelReason))
+                    {
+                        return new OkResult();
+                    }
+
+                    var order = _converter.Convert(fullOrder, log);
+                    await messageCollector.AddAsync(order, token);
+
                     return new OkResult();
                 }
-
-                var order = _converter.Convert(fullOrder);
-                await messageCollector.AddAsync(order, token);
-
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                var errorContext = new ErrorContext
+                catch (NullReferenceException e)
                 {
-                    ErrorMessage = e.Message,
-                    Exception = e,
-                    Order = fullOrder,
-                };
-                await errorMessageCollector.AddAsync(errorContext, token);
-                await errorMessageCollector.FlushAsync(token);
-                //swallow exception because these are in error queue and can be retried
-                return new OkResult();
+                    await MoveMessageToErrorQueue(errorMessageCollector, token, e, fullOrder);
+                    //swallow exception because these are in error queue and can be retried
+                    return new OkResult();
+                }
+                catch (Exception e)
+                {
+                    await MoveMessageToErrorQueue(errorMessageCollector, token, e, fullOrder);
+                    throw;
+                }
             }
+        }
+
+        private static async Task MoveMessageToErrorQueue(IAsyncCollector<ErrorContext> errorMessageCollector, CancellationToken token, Exception e, ShopifyObjects.Order fullOrder)
+        {
+            var errorContext = new ErrorContext
+            {
+                ErrorMessage = e.Message,
+                Exception = e,
+                Order = fullOrder,
+            };
+            await errorMessageCollector.AddAsync(errorContext, token);
+            await errorMessageCollector.FlushAsync(token);
         }
 
         public class ErrorContext
@@ -96,6 +111,16 @@ namespace ImmerDiscordBot.TrelloListener
             public string ErrorMessage { get; set; }
             public Exception Exception { get; set; }
             public ShopifyObjects.Order Order { get; set; }
+        }
+    }
+
+    public static class ShopifyOrderCreateTriggerLoggingExtensions
+    {
+        private static readonly Func<ILogger, string, long?, IDisposable> _scopeAction  = LoggerMessage.DefineScope<string, long?>("Working with order {name} id {id}");
+
+        public static IDisposable UseScope(this ILogger logger, ShopifyObjects.Order order)
+        {
+            return _scopeAction(logger, order.Name, order.Id);
         }
     }
 }

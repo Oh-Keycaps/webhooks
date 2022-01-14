@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Shopify
@@ -20,7 +21,7 @@ namespace ImmerDiscordBot.TrelloListener.Core.Shopify
         public void IsOrderForDactylKeyboard(string fileRelativePath, bool expected)
         {
             var message = FakeMessageBus.CreateRequest(fileRelativePath);
-            var order = message.ToOrderObject();
+            var order = message.ToOrderObject(NullLogger.Instance);
 
             var actual = _iut.IsOrderForDactylKeyboard(order);
 

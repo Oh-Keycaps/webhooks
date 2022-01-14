@@ -77,12 +77,17 @@ namespace ImmerDiscordBot.TrelloListener
             public List<T> Items { get; } = new List<T>();
             private readonly ConcurrentQueue<T> _ordersCache = new ConcurrentQueue<T>();
 
-            public async Task AddAsync(T item, CancellationToken cancellationToken = new CancellationToken())
+            public Task AddAsync(T item, CancellationToken cancellationToken = new CancellationToken())
             {
-                _ordersCache.Enqueue(item);
+                lock (Items)
+                {
+                    _ordersCache.Enqueue(item);
+                }
+
+                return Task.CompletedTask;
             }
 
-            public async Task FlushAsync(CancellationToken cancellationToken = new CancellationToken())
+            public Task FlushAsync(CancellationToken cancellationToken = new CancellationToken())
             {
                 lock (Items)
                 {
@@ -95,6 +100,8 @@ namespace ImmerDiscordBot.TrelloListener
                         }
                     }
                 }
+
+                return Task.CompletedTask;
             }
         }
     }
