@@ -5,7 +5,6 @@ using ImmerDiscordBot.TrelloListener.Core.GoogleSheets;
 using ImmerDiscordBot.TrelloListener.Core.Shopify;
 using ImmerDiscordBot.TrelloListener.Core.Trello;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: FunctionsStartup(typeof(ImmerDiscordBot.TrelloListener.Startup))]
@@ -32,6 +31,7 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddSingleton<IShopifyClient, ShopifyClient>()
                 .AddTransient<ShopifyServiceBusTriggerManager>()
                 .AddTransient<OrderToSheetRowMapper>()
+                .AddTransient<OrderPrintStatusProvider>()
                 ;
         }
     }
