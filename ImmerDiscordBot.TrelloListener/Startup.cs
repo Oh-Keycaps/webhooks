@@ -32,6 +32,7 @@ namespace ImmerDiscordBot.TrelloListener
                 .AddTransient<ShopifyServiceBusTriggerManager>()
                 .AddTransient<OrderToSheetRowMapper>()
                 .AddTransient<OrderPrintStatusProvider>()
+                .AddTransient<TrelloUpdateOrderPrintStatus>()
                 ;
         }
     }

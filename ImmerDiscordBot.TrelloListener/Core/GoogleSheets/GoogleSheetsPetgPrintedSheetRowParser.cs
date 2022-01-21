@@ -23,8 +23,11 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
 
         private bool ParseBoolSafe(int index)
         {
-            return bool.Parse(_row.ElementAtOrDefault(index)?.ToString() ?? bool.FalseString);
+            var value = _row.ElementAtOrDefault(index)?.ToString();
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            return bool.Parse(value ?? bool.FalseString);
         }
+
         private readonly IList<object> _row;
 
         public GoogleSheetsPetgPrintedSheetRowParser(IList<object> row)
@@ -39,7 +42,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.GoogleSheets
             {
                 Order = Order.Trim(),
                 IsShipped = !string.IsNullOrEmpty(shippedOutDate),
-                IsKeyboardPrinting = IsTopLeftPrinted || IsTopRightPrinted || IsBottomLeftPrinted || IsBottomRightPrinted || IsWristPrinted
+                IsKeyboardPrinting = IsTopLeftPrinted || IsTopRightPrinted || IsBottomLeftPrinted || IsBottomRightPrinted || IsWristPrinted,
+                AreAllPartsPrinted = IsTopLeftPrinted && IsTopRightPrinted && IsBottomLeftPrinted && IsBottomRightPrinted && IsWristPrinted
             };
         }
     }

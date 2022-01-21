@@ -7,6 +7,10 @@
         public string Order { get; set; }
         /// <summary> is true if any of the items have been printed </summary>
         public bool IsKeyboardPrinting { get; set; }
+
+        /// <summary> is true if all of the items have been printed </summary>
+        public bool AreAllPartsPrinted { get; set; }
+
         /// <summary> is true if the shipped box has a value </summary>
         public bool IsShipped { get; set; }
     }

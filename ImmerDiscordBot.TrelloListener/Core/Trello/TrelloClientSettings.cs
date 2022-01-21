@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Trello
@@ -14,6 +15,12 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
         {
             return services.AddOptions<TrelloClientSettings>()
                 .Configure<IConfiguration>((settings, configuration) => configuration.GetSection("Trello").Bind(settings))
+                .Services
+                .AddHttpClient(nameof(TrelloClient))
+                .ConfigureHttpClient((provider, client) =>
+                {
+                    client.BaseAddress = new Uri("https://api.trello.com/");
+                })
                 .Services;
         }
     }
