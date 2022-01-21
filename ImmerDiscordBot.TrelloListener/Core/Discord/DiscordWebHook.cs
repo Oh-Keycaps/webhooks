@@ -13,12 +13,9 @@ namespace ImmerDiscordBot.TrelloListener.Core.Discord
         private readonly HttpClient _client;
         private readonly DiscordSettings _settings;
 
-        public DiscordWebHook(IOptions<DiscordSettings> discordOptions)
+        public DiscordWebHook(IOptions<DiscordSettings> discordOptions, IHttpClientFactory httpClientFactory)
         {
-            _client = new HttpClient
-            {
-                BaseAddress = new Uri("https://discordapp.com/api/webhooks/")
-            };
+            _client = httpClientFactory.CreateClient(nameof(DiscordWebHook));
             _settings = discordOptions.Value;
         }
 

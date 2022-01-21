@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ImmerDiscordBot.TrelloListener.Core.Shopify.Models;
+using ImmerDiscordBot.TrelloListener.Core.Trello.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -14,17 +15,16 @@ using Newtonsoft.Json.Linq;
 
 namespace ImmerDiscordBot.TrelloListener.Core.Trello
 {
-    public class TrelloClient : IDisposable
+    public class TrelloClient
     {
         private readonly ILogger _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly TrelloClientSettings _settings;
-        private readonly HttpClient _client;
 
-        public TrelloClient(ILogger<TrelloClient> logger, IOptions<TrelloClientSettings> settings)
+        public TrelloClient(ILogger<TrelloClient> logger, IOptions<TrelloClientSettings> settings, IHttpClientFactory httpClientFactory)
         {
-            _client = new HttpClient {BaseAddress = new Uri("https://api.trello.com/")};
-
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
             _settings = settings.Value;
         }
 
@@ -79,7 +79,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
                 uri.Labels = string.Join(",", labels);
             }
 
-            var response = await _client.PostAsync(uri.ToUriString(), null, token);
+            using var httpClient = _httpClientFactory.CreateClient(nameof(TrelloClient));
+            var response = await httpClient.PostAsync(uri.ToUriString(), null, token);
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(stream);
             return streamReader.ReadToEnd();
@@ -91,7 +92,8 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             {
                 Filter = "commentCard"
             };
-            var response = await _client.GetAsync(uri.ToUriString(), cancellationToken);
+            using var httpClient = _httpClientFactory.CreateClient(nameof(TrelloClient));
+            var response = await httpClient.GetAsync(uri.ToUriString(), cancellationToken);
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(stream);
             using var reader = new JsonTextReader(streamReader);
@@ -99,9 +101,34 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             return await GetSuccessfulContent(response);
         }
 
+        public async Task<IReadOnlyList<TrelloList>> GetListsOnBoard(string boardId)
+        {
+            using var httpClient = _httpClientFactory.CreateClient(nameof(TrelloClient));
+            var uriBuilder = new TrelloListCardUriQueryBuilder(_settings, boardId)
+            {
+                Cards = TrelloListCardUriQueryBuilder.ListCards.open,
+                Filter = TrelloListCardUriQueryBuilder.ListFilter.all,
+                CardFields = "id,idList,pos,name,isTemplate",
+                Fields = "id,name"
+            };
+            var response = await httpClient.GetAsync(uriBuilder.ToUriString());
+
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            var trelloList = JsonConvert.DeserializeObject<TrelloList[]>(content);
+            return trelloList.ToImmutableArray();
+        }
         internal async Task<T> GetSuccessfulContent<T>(HttpResponseMessage g)
         {
             return JsonConvert.DeserializeObject<T>(await GetSuccessfulContent(g));
+        }
+
+        public async Task MoveCardToList(string cardId, string idList)
+        {
+            var uriBuilder = new TrelloMoveCardToListQueryBuilder(_settings, cardId) { ListId = idList };
+            using var httpClient = _httpClientFactory.CreateClient(nameof(TrelloClient));
+            var response = await httpClient.PutAsync(uriBuilder.ToUriString(), null);
+            response.EnsureSuccessStatusCode();
         }
 
         internal async Task<string> GetSuccessfulContent(HttpResponseMessage g)
@@ -115,7 +142,5 @@ namespace ImmerDiscordBot.TrelloListener.Core.Trello
             g.EnsureSuccessStatusCode();
             return content;
         }
-
-        public void Dispose() => _client.Dispose();
     }
 }

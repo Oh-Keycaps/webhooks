@@ -1,4 +1,5 @@
-﻿using ImmerDiscordBot.TrelloListener.Core.Shopify;
+﻿
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,12 @@ namespace ImmerDiscordBot.TrelloListener.Core.Discord
         {
             return services.AddOptions<DiscordSettings>()
                 .Configure<IConfiguration>((settings, configuration) => configuration.GetSection("Discord").Bind(settings))
+                .Services
+                .AddHttpClient(nameof(DiscordWebHook))
+                .ConfigureHttpClient((provider, client) =>
+                {
+                    client.BaseAddress = new Uri("https://discordapp.com/api/webhooks/");
+                })
                 .Services;
         }
     }
