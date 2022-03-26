@@ -22,9 +22,9 @@ namespace ImmerDiscordBot.TrelloListener.CreateRowGoogleSheetsCore
         public async Task HandleMessage([ServiceBusTrigger("createrowgooglesheets")] Order order, ILogger log, CancellationToken token)
         {
             var sheetRow = _orderMapper.MapToSheetRow(order);
-            log.LogDebug("+CreateRowInGoogleSpreadsheets {0}", sheetRow.OrderName);
-            await _sheetsClient.Append(sheetRow, token);
-            log.LogDebug("-CreateRowInGoogleSpreadsheets {0}", sheetRow.OrderName);
+            log.LogDebug("+CreateRowInGoogleSpreadsheets {OrderName}", sheetRow.OrderName);
+            await _sheetsClient.Append(sheetRow, token, log);
+            log.LogDebug("-CreateRowInGoogleSpreadsheets {OrderName}", sheetRow.OrderName);
         }
     }
 }
