@@ -24,7 +24,7 @@ namespace ImmerDiscordBot.TrelloListener
         /// </summary>
         /// <param name="myTimer">The time the trigger was ran</param>
         /// <param name="log"></param>
-        [FunctionName("UpdateTrelloPrintingStatusTrigger")]
+        [Disable("DisableUpdateTrelloPrintingStatusTrigger"), FunctionName("UpdateTrelloPrintingStatusTrigger")]
         public Task RunAsync([TimerTrigger("0 0 1 * * *")] TimerInfo myTimer, ILogger log)
         {
             return Execute(log);
@@ -35,7 +35,7 @@ namespace ImmerDiscordBot.TrelloListener
         /// </summary>
         /// <param name="myTimer">The time the trigger was ran</param>
         /// <param name="log"></param>
-        [FunctionName("ManuallyUpdateTrelloPrintingStatusTrigger")]
+        [Disable("DisableUpdateTrelloPrintingStatusTrigger"), FunctionName("ManuallyUpdateTrelloPrintingStatusTrigger")]
         public async Task<IActionResult> ManuallyRunAsync([HttpTrigger(AuthorizationLevel.Function, "post")]HttpRequest req, ILogger log)
         {
             try
@@ -45,7 +45,7 @@ namespace ImmerDiscordBot.TrelloListener
             }
             catch (Exception e)
             {
-                return new InternalServerErrorResult();
+                return new ObjectResult(e){StatusCode = StatusCodes.Status500InternalServerError};
             }
         }
 

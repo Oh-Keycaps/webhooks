@@ -29,19 +29,21 @@ namespace ImmerDiscordBot.TrelloListener
             IAsyncCollector<Message> createRowGoogleSheetsCollector
         )
         {
-            log.LogInformation("+Processing message:{0}", m.MessageId);
+            log.LogDebug("+Processing message:{MessageId}", m.MessageId);
             try
             {
                 var response = _manager.HandleMessage(m);
                 var message = m.Clone();
                 if (response.ShouldCreateCardOnTrello)
                 {
+                    log.LogInformation("Sending message to createtrellocard queue for processing");
                     await createTrelloCardCollector.AddAsync(message, token);
                     await createTrelloCardCollector.FlushAsync(token);
                 }
 
                 if (response.ShouldAddRowToGoogleSheets)
                 {
+                    log.LogInformation("Sending message to createrowgooglesheets queue for processing");
                     await createRowGoogleSheetsCollector.AddAsync(message, token);
                     await createRowGoogleSheetsCollector.FlushAsync(token);
                 }
@@ -54,7 +56,7 @@ namespace ImmerDiscordBot.TrelloListener
                 await messageCollector.AddAsync(erroredMessage, token);
             }
 
-            log.LogInformation("-Processing message:{0}", m.MessageId);
+            log.LogDebug("-Processing message:{MessageId}", m.MessageId);
         }
     }
 }

@@ -54,6 +54,13 @@ namespace ImmerDiscordBot.TrelloListener
             }
         }
 
+        /// <summary> Listens to a webhook from Shopify when a order is created. </summary>
+        /// <param name="req">The posted message from Shopify. Contains PII, must remove as it isn't needed for processing</param>
+        /// <param name="messageCollector">collects a clean Order with only required parameters. </param>
+        /// <param name="errorMessageCollector">if there is a problem when parsing we send the message to error queue</param>
+        /// <param name="log">function logger</param>
+        /// <param name="token"> CancellationToken...it is what it is </param>
+        /// <returns>Shopify wants to know if I heard it. If I don't send ok and enough messages fail it will stop sending messages to me</returns>
         [FunctionName("ShopifyOrderCreateTrigger")]
         public async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
